@@ -1,0 +1,206 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+// صف وحيد (id = 1) يحمل كل نصوص وإعدادات الموقع العامة
+model SiteSettings {
+  id Int @id @default(1)
+
+  // الهوية والتواصل
+  companyName    String @default("") @db.VarChar(191)
+  companyTagline String @default("") @db.VarChar(191)
+  logoUrl        String @default("") @db.VarChar(1000)
+  topAddress     String @default("") @db.VarChar(255)
+  phone          String @default("") @db.VarChar(64)
+  email          String @default("") @db.VarChar(191)
+  tendersEmail   String @default("") @db.VarChar(191)
+  address        String @default("") @db.VarChar(255)
+  workingHours   String @default("") @db.VarChar(191)
+  crBadge        String @default("") @db.VarChar(191)
+  navCtaLabel    String @default("") @db.VarChar(191)
+
+  // Hero
+  heroOverline       String @default("") @db.VarChar(255)
+  heroOverlineSub    String @default("") @db.VarChar(255)
+  heroTitleLine1     String @default("") @db.VarChar(255)
+  heroTitleHighlight String @default("") @db.VarChar(255)
+  heroTitleSuffix    String @default("") @db.VarChar(255)
+  heroSubtitle       String @db.Text
+  heroImage          String @default("") @db.VarChar(1000)
+  heroPrimaryCta     String @default("") @db.VarChar(191)
+  heroSecondaryCta   String @default("") @db.VarChar(191)
+
+  // عن المؤسسة
+  aboutEyebrow     String @default("") @db.VarChar(191)
+  aboutTitle       String @default("") @db.VarChar(500)
+  aboutP1          String @db.Text
+  aboutP2          String @db.Text
+  aboutImage       String @default("") @db.VarChar(1000)
+  aboutPlaqueTitle String @default("") @db.VarChar(191)
+  aboutPlaqueText  String @db.Text
+
+  // الخدمات
+  servicesEyebrow String @default("") @db.VarChar(191)
+  servicesTitle   String @default("") @db.VarChar(500)
+  servicesIntro   String @db.Text
+
+  // المشاريع
+  projectsEyebrow String @default("") @db.VarChar(191)
+  projectsTitle   String @default("") @db.VarChar(500)
+  projectsCta     String @default("") @db.VarChar(191)
+
+  // الجودة
+  qualityEyebrow String @default("") @db.VarChar(191)
+  qualityTitle   String @default("") @db.VarChar(500)
+  qualityText    String @db.Text
+  metricsEyebrow String @default("") @db.VarChar(191)
+  metricsTitle   String @default("") @db.VarChar(191)
+
+  // الشركاء والآراء
+  partnersEyebrow String @default("") @db.VarChar(191)
+  partnersTitle   String @default("") @db.VarChar(500)
+
+  // الاستشارة
+  consultEyebrow String @default("") @db.VarChar(191)
+  consultTitle   String @default("") @db.VarChar(500)
+  consultText    String @db.Text
+  ndaNote        String @default("") @db.VarChar(500)
+
+  // الفوتر
+  footerAbout     String @db.Text
+  footerBadge     String @default("") @db.VarChar(255)
+  footerIso       String @default("") @db.VarChar(64)
+  footerCopyright String @default("") @db.VarChar(500)
+
+  // صفحة "قريبًا": لو مفعّلة تُعرض للزوار بدل الموقع
+  comingSoonEnabled Boolean @default(false)
+  comingSoonTitle   String  @default("") @db.VarChar(255)
+  comingSoonText    String  @db.Text
+  comingSoonLaunch  String  @default("") @db.VarChar(191)
+  comingSoonImage   String  @default("") @db.VarChar(1000)
+}
+
+model Stat {
+  id        Int     @id @default(autoincrement())
+  value     String  @db.VarChar(64)
+  unit      String  @default("") @db.VarChar(64)
+  label     String  @db.VarChar(255)
+  icon      String  @default("") @db.VarChar(64)
+  sortOrder Int     @default(0)
+}
+
+model Pillar {
+  id          Int    @id @default(autoincrement())
+  icon        String @db.VarChar(64)
+  title       String @db.VarChar(191)
+  description String @db.VarChar(500)
+  sortOrder   Int    @default(0)
+}
+
+model Service {
+  id          Int    @id @default(autoincrement())
+  icon        String @db.VarChar(64)
+  code        String @default("") @db.VarChar(64)
+  title       String @db.VarChar(191)
+  description String @db.Text
+  sortOrder   Int    @default(0)
+}
+
+model ProjectCategory {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(191)
+  sortOrder Int       @default(0)
+  projects  Project[]
+}
+
+model Project {
+  id            Int             @id @default(autoincrement())
+  title         String          @db.VarChar(255)
+  kind          String          @default("") @db.VarChar(191)
+  location      String          @default("") @db.VarChar(191)
+  badge         String          @default("") @db.VarChar(191)
+  badgePrimary  Boolean         @default(false)
+  meta          String          @default("") @db.VarChar(191)
+  imageUrl      String          @default("") @db.VarChar(1000)
+  description   String          @db.Text
+  features      Json?
+  published     Boolean         @default(true)
+  sortOrder     Int             @default(0)
+  categoryId    Int?
+  category      ProjectCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@index([categoryId])
+}
+
+model QualityItem {
+  id          Int    @id @default(autoincrement())
+  icon        String @db.VarChar(64)
+  title       String @db.VarChar(255)
+  description String @db.VarChar(500)
+  sortOrder   Int    @default(0)
+}
+
+model QualityMetric {
+  id        Int    @id @default(autoincrement())
+  label     String @db.VarChar(255)
+  valueText String @db.VarChar(64)
+  percent   Int    @default(100)
+  sortOrder Int    @default(0)
+}
+
+model Certification {
+  id        Int    @id @default(autoincrement())
+  icon      String @db.VarChar(64)
+  code      String @db.VarChar(64)
+  label     String @db.VarChar(191)
+  sortOrder Int    @default(0)
+}
+
+model Partner {
+  id        Int    @id @default(autoincrement())
+  icon      String @db.VarChar(64)
+  name      String @db.VarChar(191)
+  sortOrder Int    @default(0)
+}
+
+model Testimonial {
+  id        Int    @id @default(autoincrement())
+  quote     String @db.Text
+  name      String @db.VarChar(191)
+  role      String @db.VarChar(255)
+  rating    Int    @default(5)
+  sortOrder Int    @default(0)
+}
+
+enum InquiryStatus {
+  NEW
+  READ
+  ARCHIVED
+}
+
+model Inquiry {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(191)
+  phone       String        @db.VarChar(64)
+  projectType String        @default("") @db.VarChar(191)
+  location    String        @default("") @db.VarChar(191)
+  budget      String        @default("") @db.VarChar(191)
+  details     String        @db.Text
+  status      InquiryStatus @default(NEW)
+  createdAt   DateTime      @default(now())
+
+  @@index([status, createdAt])
+}
+
+model AdminUser {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique @db.VarChar(191)
+  name         String   @db.VarChar(191)
+  passwordHash String   @db.VarChar(255)
+  createdAt    DateTime @default(now())
+}
