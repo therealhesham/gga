@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // ناتج مستقل (server.js + الملفات المطلوبة فقط) لصورة Docker صغيرة
+  output: "standalone",
   experimental: {
     agentFeedback: true,
   },

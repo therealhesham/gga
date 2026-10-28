@@ -1,0 +1,17 @@
+node_modules
+.next
+generated
+uploads
+.git
+.gitignore
+.claude
+.vscode
+npm-debug.log*
+README.md
+Dockerfile
+.dockerignore
+
+# الأسرار لا تدخل سياق البناء؛ تُمرَّر كـ secret أو --env-file
+.env
+.env.*
+!.env.example
