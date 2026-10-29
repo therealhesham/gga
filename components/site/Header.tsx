@@ -1,7 +1,7 @@
 import type { SiteSettingsData } from "@/lib/data";
 import { HeaderBar } from "./HeaderBar";
 
-export function Header({ settings }: { settings: SiteSettingsData }) {
+export function Header({ settings, home = true }: { settings: SiteSettingsData; home?: boolean }) {
   return (
     <HeaderBar
       companyName={settings.companyName}
@@ -10,6 +10,7 @@ export function Header({ settings }: { settings: SiteSettingsData }) {
       topAddress={settings.topAddress}
       phone={settings.phone}
       crBadge={settings.crBadge}
+      home={home}
     />
   );
 }

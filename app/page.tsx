@@ -11,6 +11,9 @@ import { Trust } from "@/components/site/Trust";
 import { Consultation } from "@/components/site/Consultation";
 import { Footer } from "@/components/site/Footer";
 import { SectionDots } from "@/components/site/SectionDots";
+import { Chrome } from "@/components/site/Chrome";
+import { Intro } from "@/components/site/Intro";
+import { ProjectsMap } from "@/components/site/ProjectsMap";
 import { MotionRoot } from "@/components/site/MotionRoot";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -27,9 +30,11 @@ export default async function Home() {
 
   return (
     <MotionRoot>
+      <Intro />
+      <Chrome phone={settings.phone} />
       <Header settings={settings} />
       <SectionDots />
-      <main className="w-full bg-ivory">
+      <main data-snap-page className="w-full bg-ivory">
         <div className="flex flex-col w-full text-ink">
           <Hero settings={settings} stats={data.stats} />
           <About settings={settings} pillars={data.pillars} />
@@ -41,6 +46,7 @@ export default async function Home() {
             categories={data.categories}
             projects={data.projects}
           />
+          <ProjectsMap projects={data.projects} />
           <Quality
             settings={settings}
             qualityItems={data.qualityItems}

@@ -4,7 +4,9 @@ import { SECTION_IDS } from "@/lib/constants";
 import { EASE } from "@/lib/motion";
 import type { SiteData } from "@/lib/data";
 import { Img } from "./Img";
+import { Blueprint } from "./Blueprint";
 import { Reveal } from "./Reveal";
+import { ScrollText } from "./ScrollText";
 import { SectionEyebrow } from "./SectionEyebrow";
 
 export function About({ settings, pillars }: Pick<SiteData, "settings" | "pillars">) {
@@ -13,7 +15,9 @@ export function About({ settings, pillars }: Pick<SiteData, "settings" | "pillar
       id={SECTION_IDS.about}
       className="snap-section relative w-full min-h-svh flex items-center bg-ivory py-24 md:py-28"
     >
-      <div className="max-w-7xl mx-auto w-full px-margin-mobile md:px-margin">
+      {/* مخطط هندسي يُرسم تباعًا مع التمرير */}
+      <Blueprint className="pointer-events-none absolute left-0 top-16 bottom-0 hidden h-[86%] w-auto text-gold/25 lg:block" />
+      <div className="relative max-w-7xl mx-auto w-full px-margin-mobile md:px-margin">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-20 items-center">
           <div className="lg:col-span-5">
             {/* المراقبة على الأب: العنصر المقصوص بالكامل لا يُحتسب ظاهرًا عند IntersectionObserver */}
@@ -65,7 +69,7 @@ export function About({ settings, pillars }: Pick<SiteData, "settings" | "pillar
             </Reveal>
 
             <Reveal delay={120} className="space-y-4 max-w-2xl">
-              <p className="text-base font-light leading-8 text-ink/70">{settings.aboutP1}</p>
+              <ScrollText text={settings.aboutP1} className="text-base font-light leading-8 text-ink/80" />
               {settings.aboutP2 && (
                 <p className="text-base font-light leading-8 text-ink/70">{settings.aboutP2}</p>
               )}

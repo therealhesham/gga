@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { motion, useMotionValueEvent, useScroll, useSpring, useTransform } from "motion/react";
 import { ArrowLeft } from "lucide-react";
 import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
+import { toArabicDigits } from "@/lib/digits";
 import { EASE } from "@/lib/motion";
 import { Img } from "./Img";
-import { Reveal } from "./Reveal";
+import { Magnetic } from "./Magnetic";
 import { SectionEyebrow } from "./SectionEyebrow";
 
 type ProjectItem = {
@@ -32,18 +34,48 @@ type Props = {
   projects: ProjectItem[];
 };
 
-// نمط توزيع البطاقات في الشبكة (12 عمود): كبير، متوسط، ثم بطاقتان متساويتان
-const SPANS = ["lg:col-span-7", "lg:col-span-5", "lg:col-span-6", "lg:col-span-6"];
-const isLarge = (index: number) => index % 4 < 2;
-
+/**
+ * معرض أفقي: القسم يتثبّت في الشاشة والتمرير الرأسي يحرّك الشريط أفقيًا.
+ * الارتفاع الكلي = مسافة الشريط الأفقية + ارتفاع الشاشة، ويُقاس عند تغيّر الحجم.
+ */
 export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
   const [active, setActive] = useState<number | "all">("all");
-  const visible =
-    active === "all" ? projects : projects.filter((p) => p.categoryId === active);
+  const visible = active === "all" ? projects : projects.filter((p) => p.categoryId === active);
+
+  const outerRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [dims, setDims] = useState({ track: 0, view: 0, vh: 0 });
+  const [index, setIndex] = useState(0);
+
+  const { scrollYProgress } = useScroll({ target: outerRef, offset: ["start start", "end end"] });
+  const distance = Math.max(0, dims.track - dims.view);
+  // في RTL يبدأ الشريط من اليمين ويمتد يسارًا، فالإزاحة الموجبة تكشف الباقي
+  const x = useTransform(scrollYProgress, [0, 1], [0, distance]);
+  const bar = useSpring(scrollYProgress, { stiffness: 140, damping: 30, mass: 0.4 });
+
+  useEffect(() => {
+    const measure = () => {
+      const t = trackRef.current;
+      if (!t) return;
+      setDims({ track: t.offsetWidth, view: window.innerWidth, vh: window.innerHeight });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (trackRef.current) ro.observe(trackRef.current);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [visible.length]);
+
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    setIndex(Math.min(visible.length - 1, Math.max(0, Math.round(v * Math.max(visible.length - 1, 0)))));
+  });
 
   const tab = (isActive: boolean) =>
-    `relative whitespace-nowrap pb-2.5 text-sm transition-colors after:absolute after:bottom-0 after:right-0 after:h-px after:bg-gold after:transition-all after:duration-500 after:w-0 ${
-      isActive ? "font-semibold text-ink" : "font-normal text-ink/50 hover:text-ink hover:after:w-1/2"
+    `relative whitespace-nowrap pb-2 text-sm transition-colors ${
+      isActive ? "font-semibold text-ink" : "font-normal text-ink/50 hover:text-ink"
     }`;
 
   const underline = (
@@ -57,129 +89,156 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
   return (
     <section
       id={SECTION_IDS.projects}
-      className="snap-section relative w-full min-h-svh bg-ivory py-24 md:py-28"
+      ref={outerRef}
+      className="snap-section relative w-full bg-ivory"
+      style={{ height: dims.vh ? distance + dims.vh : "320svh" }}
     >
-      <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin">
-        <Reveal className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 md:mb-14">
-          <div>
-            <SectionEyebrow>{eyebrow}</SectionEyebrow>
-            <h2 className="font-display font-medium text-[clamp(2rem,4vw,3.4rem)] leading-[1.4] text-ink">
-              {title}
-            </h2>
-          </div>
+      <div className="sticky top-0 h-svh overflow-hidden flex flex-col justify-center pt-20">
+        <div className="overflow-hidden">
+          <motion.div
+            ref={trackRef}
+            style={{ x }}
+            className="flex w-max items-stretch gap-5 md:gap-8 px-margin-mobile md:px-margin"
+          >
+            {/* لوحة العنوان والفلتر */}
+            <div className="shrink-0 w-[82vw] sm:w-[420px] flex flex-col justify-center pe-2 md:pe-8">
+              <SectionEyebrow>{eyebrow}</SectionEyebrow>
+              <h2 className="font-display font-medium text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.4] text-ink">
+                {title}
+              </h2>
 
-          {categories.length > 0 && (
-            <div className="flex items-center md:flex-wrap gap-x-7 gap-y-1 overflow-x-auto md:overflow-visible border-b border-ink/10 -mx-margin-mobile px-margin-mobile md:mx-0 md:px-0 md:max-w-xl">
-              <button type="button" className={tab(active === "all")} onClick={() => setActive("all")}>
-                الكل
-                {active === "all" && underline}
-              </button>
-              {categories.map((c) => (
-                <button
-                  key={c.id}
-                  type="button"
-                  className={tab(active === c.id)}
-                  onClick={() => setActive(c.id)}
-                >
-                  {c.name}
-                  {active === c.id && underline}
-                </button>
-              ))}
+              {categories.length > 0 && (
+                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-ink/10">
+                  <button type="button" className={tab(active === "all")} onClick={() => setActive("all")}>
+                    الكل
+                    {active === "all" && underline}
+                  </button>
+                  {categories.map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      className={tab(active === c.id)}
+                      onClick={() => setActive(c.id)}
+                    >
+                      {c.name}
+                      {active === c.id && underline}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <p className="mt-8 text-sm font-light text-ink/50 inline-flex items-center gap-2">
+                <ArrowLeft className="size-4 text-gold" />
+                واصل التمرير لاستعراض المشاريع
+              </p>
             </div>
-          )}
-        </Reveal>
 
-        {visible.length === 0 ? (
-          <p className="text-center text-ink/50 font-light py-20 border-y border-ink/10">
-            لا توجد مشاريع في هذا التصنيف حاليًا.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-14">
-            <AnimatePresence mode="popLayout">
-            {visible.map((p, i) => {
-              const large = isLarge(i);
-              return (
-                <motion.div
-                  key={p.id}
-                  layout="position"
-                  className={SPANS[i % 4]}
-                  initial={{ opacity: 0, y: 36 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  viewport={{ once: true, amount: 0.12 }}
-                  transition={{ duration: 0.9, delay: (i % 2) * 0.12, ease: EASE }}
+            {visible.length === 0 && (
+              <p className="shrink-0 self-center text-ink/50 font-light px-10">
+                لا توجد مشاريع في هذا التصنيف حاليًا.
+              </p>
+            )}
+
+            {visible.map((p, i) => (
+              <motion.div
+                key={p.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: i * 0.06, ease: EASE }}
+                className="shrink-0"
+              >
+                <Link
+                  href={`/projects/${p.id}`}
+                  data-cursor="استعرض"
+                  className="group relative block h-[min(64svh,620px)] w-[78vw] sm:w-[54vw] lg:w-[36vw] overflow-hidden bg-ink"
                 >
-                  <article className="group">
-                    <div className="relative w-full overflow-hidden h-[280px] sm:h-[340px] lg:h-[420px] bg-ivory-deep">
-                      <Img
-                        src={p.imageUrl}
-                        alt={p.title}
-                        sizes="(min-width: 1024px) 60vw, 100vw"
-                        className="object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent opacity-80 transition-opacity duration-700 group-hover:opacity-100" />
-                      <div className="absolute top-4 right-4 flex items-center gap-2">
-                        {p.location && (
-                          <span className="px-3 py-1 bg-ivory/90 backdrop-blur-sm text-ink text-xs font-medium">
-                            {p.location}
-                          </span>
-                        )}
-                        {p.badge && (
-                          <span
-                            className={`px-3 py-1 text-xs font-medium ${
-                              p.badgePrimary ? "bg-gold-soft text-ink" : "bg-ink/70 text-white backdrop-blur-sm"
-                            }`}
-                          >
-                            {p.badge}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                  <Img
+                    src={p.imageUrl}
+                    alt={p.title}
+                    sizes="(min-width: 1024px) 36vw, 80vw"
+                    className="object-cover transition-transform duration-[1600ms] ease-out group-hover:scale-[1.07]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-ink/10" />
 
-                    <div className="pt-6">
-                      <div className="flex items-center justify-between gap-3 mb-2.5 text-sm">
-                        <span className="font-medium text-gold">{p.kind}</span>
-                        {p.meta && <span className="font-light text-ink/50">{p.meta}</span>}
-                      </div>
-                      <h3
-                        className={`font-display font-semibold text-ink transition-colors duration-500 group-hover:text-gold ${
-                          large ? "text-2xl md:text-[1.75rem]" : "text-xl md:text-2xl"
-                        }`}
-                      >
-                        {p.title}
-                      </h3>
-                      <p className="mt-3 text-sm md:text-base font-light leading-8 text-ink/60 line-clamp-3">
-                        {p.description}
-                      </p>
-                      {p.features.length > 0 && (
-                        <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-5 pt-4 border-t border-ink/10 text-sm font-light text-ink/65">
-                          {p.features.map((f, idx) => (
-                            <li key={idx} className="flex items-center gap-2">
-                              <Icon name={f.icon} className="size-4 text-gold [stroke-width:1.5]" />
-                              <span>{f.text}</span>
-                            </li>
-                          ))}
-                        </ul>
+                  <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5 md:p-6">
+                    <span className="font-display text-3xl text-white/40 leading-none">
+                      {toArabicDigits(String(i + 1).padStart(2, "0"))}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      {p.location && (
+                        <span className="px-3 py-1 bg-ivory/90 backdrop-blur-sm text-ink text-xs font-medium">
+                          {p.location}
+                        </span>
+                      )}
+                      {p.badge && (
+                        <span
+                          className={`px-3 py-1 text-xs font-medium ${
+                            p.badgePrimary ? "bg-gold-soft text-ink" : "bg-ink/70 text-white backdrop-blur-sm"
+                          }`}
+                        >
+                          {p.badge}
+                        </span>
                       )}
                     </div>
-                  </article>
-                </motion.div>
-              );
-            })}
-            </AnimatePresence>
-          </div>
-        )}
+                  </div>
 
-        {cta && (
-          <Reveal className="mt-16 flex justify-center">
-            <a
-              href={`#${SECTION_IDS.contact}`}
-              className="group inline-flex items-center gap-3 px-9 py-4 border border-ink/80 text-ink text-sm font-semibold hover:bg-ink hover:text-ivory transition-colors duration-500"
-            >
-              <span>{cta}</span>
-              <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
-            </a>
-          </Reveal>
+                  <div className="absolute inset-x-0 bottom-0 p-5 md:p-7 text-white">
+                    <div className="flex items-center justify-between gap-3 text-sm mb-2">
+                      <span className="font-medium text-gold-soft">{p.kind}</span>
+                      {p.meta && <span className="font-light text-white/60">{p.meta}</span>}
+                    </div>
+                    <h3 className="font-display text-xl md:text-[1.7rem] font-medium leading-snug">
+                      {p.title}
+                    </h3>
+                    <p className="mt-3 text-sm font-light leading-7 text-white/70 line-clamp-2 max-w-md">
+                      {p.description}
+                    </p>
+                    {p.features.length > 0 && (
+                      <ul className="mt-4 pt-3 border-t border-white/15 flex flex-wrap gap-x-5 gap-y-1.5 text-xs font-light text-white/75">
+                        {p.features.slice(0, 3).map((f, k) => (
+                          <li key={k} className="flex items-center gap-1.5">
+                            <Icon name={f.icon} className="size-3.5 text-gold-soft [stroke-width:1.5]" />
+                            {f.text}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+
+            {/* لوحة الختام */}
+            {cta && (
+              <div className="shrink-0 w-[70vw] sm:w-[340px] flex flex-col items-start justify-center ps-2 md:ps-8 pe-margin-mobile md:pe-margin">
+                <Magnetic>
+                  <a
+                    href={`#${SECTION_IDS.contact}`}
+                    className="group inline-flex items-center gap-3 px-9 py-4 border border-ink/80 text-ink text-sm font-semibold hover:bg-ink hover:text-ivory transition-colors duration-500"
+                  >
+                    <span>{cta}</span>
+                    <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
+                  </a>
+                </Magnetic>
+              </div>
+            )}
+          </motion.div>
+        </div>
+
+        {/* مؤشر التقدم */}
+        {visible.length > 0 && (
+          <div className="absolute bottom-6 inset-x-margin-mobile md:inset-x-margin flex items-center gap-5">
+            <span className="font-display text-sm text-ink/60 tabular-nums">
+              {toArabicDigits(String(index + 1).padStart(2, "0"))}
+              <span className="text-ink/30"> / {toArabicDigits(String(visible.length).padStart(2, "0"))}</span>
+            </span>
+            <div className="relative h-px flex-1 bg-ink/15">
+              <motion.div
+                style={{ scaleX: bar, transformOrigin: "right" }}
+                className="absolute inset-y-[-1px] inset-x-0 h-[3px] bg-gold"
+              />
+            </div>
+          </div>
         )}
       </div>
     </section>

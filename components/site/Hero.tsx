@@ -3,6 +3,9 @@ import { ArrowDown, ArrowLeft } from "lucide-react";
 import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
 import { fadeUp, lineReveal, stagger } from "@/lib/motion";
+import { CountUp } from "./CountUp";
+import { HeroReveal } from "./HeroReveal";
+import { Magnetic } from "./Magnetic";
 import type { SiteData } from "@/lib/data";
 import { HeroMedia } from "./HeroMedia";
 import { ParallaxLayer } from "./ParallaxLayer";
@@ -29,7 +32,7 @@ export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) 
         fade
         className="relative flex-1 flex flex-col justify-end max-w-7xl mx-auto w-full px-margin-mobile md:px-margin pt-[max(7rem,15vh)] pb-8 md:pb-10"
       >
-        <motion.div variants={stagger(0.13, 0.2)} initial="hidden" animate="show">
+        <HeroReveal>
           <div className="max-w-4xl">
             <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-6">
               <motion.span
@@ -61,15 +64,15 @@ export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) 
             </motion.p>
 
             <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-x-8 gap-y-4">
-              <motion.a
-                href={`#${SECTION_IDS.projects}`}
-                whileHover={{ y: -3 }}
-                whileTap={{ scale: 0.98 }}
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-gold-soft text-ink text-sm font-bold hover:bg-white transition-colors duration-300"
-              >
-                <span>{settings.heroPrimaryCta}</span>
-                <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
-              </motion.a>
+              <Magnetic>
+                <a
+                  href={`#${SECTION_IDS.projects}`}
+                  className="group inline-flex items-center gap-3 px-8 py-4 bg-gold-soft text-ink text-sm font-bold hover:bg-white transition-colors duration-300"
+                >
+                  <span>{settings.heroPrimaryCta}</span>
+                  <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
+                </a>
+              </Magnetic>
               <a
                 href={`#${SECTION_IDS.contact}`}
                 className="group inline-flex items-center gap-2.5 text-sm font-semibold text-white/90 hover:text-gold-soft transition-colors"
@@ -100,12 +103,14 @@ export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) 
                     {stat.icon ? (
                       <span className="flex items-center gap-2.5">
                         <Icon name={stat.icon} className="size-6 text-gold-soft shrink-0 [stroke-width:1.4]" />
-                        <span className="font-display text-xl md:text-2xl font-semibold">{stat.value}</span>
+                        <span className="font-display text-xl md:text-2xl font-semibold">
+                          <CountUp text={stat.value} />
+                        </span>
                       </span>
                     ) : (
                       <span className="flex items-baseline gap-2">
                         <span className="font-display text-3xl md:text-[clamp(2rem,5vh,3rem)] font-semibold text-gold-soft">
-                          {stat.value}
+                          <CountUp text={stat.value} />
                         </span>
                         {stat.unit && <span className="text-sm font-light text-white/60">{stat.unit}</span>}
                       </span>
@@ -118,7 +123,7 @@ export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) 
               ))}
             </motion.dl>
           )}
-        </motion.div>
+        </HeroReveal>
       </ParallaxLayer>
     </section>
   );

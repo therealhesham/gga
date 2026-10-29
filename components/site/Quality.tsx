@@ -1,6 +1,8 @@
 import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
 import type { SiteData } from "@/lib/data";
+import { Blueprint } from "./Blueprint";
+import { CountUp } from "./CountUp";
 import { MetricBar } from "./MetricBar";
 import { Reveal } from "./Reveal";
 import { SectionEyebrow } from "./SectionEyebrow";
@@ -18,6 +20,7 @@ export function Quality({ settings, qualityItems, metrics, certifications }: Pro
         aria-hidden="true"
         className="pointer-events-none absolute -left-40 top-1/3 size-[36rem] rounded-full bg-gold/10 blur-[140px]"
       />
+      <Blueprint className="pointer-events-none absolute right-6 bottom-0 hidden h-[78%] w-auto text-gold-soft/15 lg:block" />
       <div className="relative max-w-7xl mx-auto w-full px-margin-mobile md:px-margin">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-24 items-start">
           <div className="lg:col-span-6">
@@ -58,7 +61,7 @@ export function Quality({ settings, qualityItems, metrics, certifications }: Pro
                   <div className="flex items-end justify-between gap-4 mb-3.5">
                     <span className="text-base font-light text-white/80">{m.label}</span>
                     <span className="font-display text-2xl md:text-3xl font-semibold text-gold-soft shrink-0">
-                      {m.valueText}
+                      <CountUp text={m.valueText} />
                     </span>
                   </div>
                   <MetricBar percent={m.percent} />

@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
 import { BadgeCheck, MapPin, Menu, Phone, X } from "lucide-react";
 import { NAV_ITEMS, SECTION_IDS } from "@/lib/constants";
 import { EASE } from "@/lib/motion";
+import { Magnetic } from "./Magnetic";
 import { useActiveSection } from "./useActiveSection";
 
 type Props = {
@@ -14,6 +15,8 @@ type Props = {
   topAddress: string;
   phone: string;
   crBadge: string;
+  /** false في الصفحات الفرعية: الروابط تعود للرئيسية ولا يُميَّز قسم */
+  home?: boolean;
 };
 
 export function HeaderBar({
@@ -23,8 +26,11 @@ export function HeaderBar({
   topAddress,
   phone,
   crBadge,
+  home = true,
 }: Props) {
-  const active = useActiveSection();
+  const sectionActive = useActiveSection();
+  const active = home ? sectionActive : "";
+  const base = home ? "" : "/";
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   // شريط تقدم القراءة أسفل الهيدر
@@ -95,7 +101,7 @@ export function HeaderBar({
         }`}
       >
         <a
-          href={`#${SECTION_IDS.hero}`}
+          href={`${base}#${SECTION_IDS.hero}`}
           aria-label={companyName}
           className="flex items-center gap-4 shrink-0"
         >
@@ -135,7 +141,7 @@ export function HeaderBar({
             return (
               <a
                 key={item.id}
-                href={`#${item.id}`}
+                href={`${base}#${item.id}`}
                 aria-current={isActive ? "page" : undefined}
                 className={`relative py-2 text-[15px] transition-colors after:absolute after:-bottom-0.5 after:right-0 after:h-px after:bg-gold-soft after:transition-all after:duration-500 ${
                   isActive
@@ -160,9 +166,10 @@ export function HeaderBar({
 
         <div className="flex items-center gap-3">
           {ctaLabel && (
+            <Magnetic className="hidden sm:inline-block" strength={0.25}>
             <a
-              href={`#${SECTION_IDS.contact}`}
-              className={`hidden sm:inline-flex items-center px-6 py-2.5 text-sm font-semibold transition-colors duration-300 ${
+              href={`${base}#${SECTION_IDS.contact}`}
+              className={`inline-flex items-center px-6 py-2.5 text-sm font-semibold transition-colors duration-300 ${
                 solid
                   ? "bg-ink text-ivory hover:bg-gold hover:text-white"
                   : "bg-gold-soft text-ink hover:bg-white"
@@ -170,6 +177,7 @@ export function HeaderBar({
             >
               {ctaLabel}
             </a>
+            </Magnetic>
           )}
           <button
             type="button"
@@ -196,7 +204,7 @@ export function HeaderBar({
           {NAV_ITEMS.map((item) => (
             <a
               key={item.id}
-              href={`#${item.id}`}
+              href={`${base}#${item.id}`}
               onClick={() => setOpen(false)}
               className={`py-4 border-b border-ink/10 text-lg font-display ${
                 active === item.id ? "text-gold font-semibold" : "text-ink/80"
@@ -207,7 +215,7 @@ export function HeaderBar({
           ))}
           {ctaLabel && (
             <a
-              href={`#${SECTION_IDS.contact}`}
+              href={`${base}#${SECTION_IDS.contact}`}
               onClick={() => setOpen(false)}
               className="my-5 text-center bg-ink text-ivory py-3.5 font-semibold"
             >

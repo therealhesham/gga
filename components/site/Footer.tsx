@@ -2,17 +2,21 @@ import { ArrowUpRight, Clock, Mail, MapPin, PhoneCall } from "lucide-react";
 import { SECTION_IDS } from "@/lib/constants";
 import type { SiteData } from "@/lib/data";
 
-const QUICK_LINKS = [
-  { label: "الرئيسية", href: `#${SECTION_IDS.hero}` },
-  { label: "عن المؤسسة", href: `#${SECTION_IDS.about}` },
-  { label: "محفظة المشاريع", href: `#${SECTION_IDS.projects}` },
-  { label: "معايير الجودة والسلامة", href: `#${SECTION_IDS.quality}` },
-  { label: "طلب استشارة وتسعير", href: `#${SECTION_IDS.contact}` },
+const quickLinks = (base: string) => [
+  { label: "الرئيسية", href: `${base}#${SECTION_IDS.hero}` },
+  { label: "عن المؤسسة", href: `${base}#${SECTION_IDS.about}` },
+  { label: "محفظة المشاريع", href: `${base}#${SECTION_IDS.projects}` },
+  { label: "معايير الجودة والسلامة", href: `${base}#${SECTION_IDS.quality}` },
+  { label: "طلب استشارة وتسعير", href: `${base}#${SECTION_IDS.contact}` },
 ];
 
 const linkClass = "text-sm font-light text-white/60 hover:text-gold-soft transition-colors";
 
-export function Footer({ settings, services }: Pick<SiteData, "settings" | "services">) {
+export function Footer({
+  settings,
+  services,
+  homeBase = "",
+}: Pick<SiteData, "settings" | "services"> & { homeBase?: string }) {
   return (
     <footer className="snap-section w-full bg-ink text-white">
       <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin pt-20 pb-8">
@@ -44,7 +48,7 @@ export function Footer({ settings, services }: Pick<SiteData, "settings" | "serv
           <div className="lg:col-span-2">
             <h4 className="font-display text-base font-semibold mb-5">روابط رئيسية</h4>
             <ul className="space-y-3">
-              {QUICK_LINKS.map((l) => (
+              {quickLinks(homeBase).map((l) => (
                 <li key={l.href}>
                   <a className={linkClass} href={l.href}>
                     {l.label}
@@ -59,7 +63,7 @@ export function Footer({ settings, services }: Pick<SiteData, "settings" | "serv
             <ul className="space-y-3">
               {services.map((s) => (
                 <li key={s.id}>
-                  <a className={linkClass} href={`#${SECTION_IDS.services}`}>
+                  <a className={linkClass} href={`${homeBase}#${SECTION_IDS.services}`}>
                     {s.title}
                   </a>
                 </li>
@@ -98,7 +102,7 @@ export function Footer({ settings, services }: Pick<SiteData, "settings" | "serv
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-7 border-t border-white/10 text-xs font-light text-white/45">
           <span>{settings.footerCopyright}</span>
           <a
-            href={`#${SECTION_IDS.hero}`}
+            href={`${homeBase}#${SECTION_IDS.hero}`}
             className="inline-flex items-center gap-1.5 hover:text-gold-soft transition-colors"
           >
             العودة للأعلى

@@ -1,6 +1,7 @@
 import { Star } from "lucide-react";
 import { Icon } from "@/lib/icons";
 import type { SiteData } from "@/lib/data";
+import { Marquee } from "./Marquee";
 import { Reveal } from "./Reveal";
 
 type Props = Pick<SiteData, "settings" | "partners" | "testimonials">;
@@ -19,21 +20,19 @@ export function Trust({ settings, partners, testimonials }: Props) {
         </Reveal>
 
         {partners.length > 0 && (
-          <Reveal delay={100}>
-            <ul className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 border-y border-ink/10 mb-14">
+          <Reveal delay={100} className="mb-14 border-y border-ink/10 py-2">
+            <Marquee duration={Math.max(30, partners.length * 9)}>
               {partners.map((p) => (
-                <li
+                <span
                   key={p.id}
-                  className="group flex flex-col items-center justify-center gap-3 py-8 px-3 text-center border-ink/10 [&:not(:nth-child(2n))]:border-e md:[&:not(:nth-child(2n))]:border-e-0 md:[&:not(:nth-child(4n))]:border-e lg:[&:not(:nth-child(4n))]:border-e-0 lg:[&:not(:nth-child(6n))]:border-e"
+                  className="group flex items-center gap-4 px-10 py-7 text-ink/45 transition-colors duration-500 hover:text-gold"
                 >
-                  <Icon
-                    name={p.icon}
-                    className="size-8 text-ink/35 transition-colors duration-500 group-hover:text-gold [stroke-width:1.2]"
-                  />
-                  <span className="text-sm font-medium text-ink/65">{p.name}</span>
-                </li>
+                  <Icon name={p.icon} className="size-8 [stroke-width:1.2]" />
+                  <span className="font-display text-2xl whitespace-nowrap">{p.name}</span>
+                  <span aria-hidden="true" className="ms-10 size-1.5 rounded-full bg-gold/40" />
+                </span>
               ))}
-            </ul>
+            </Marquee>
           </Reveal>
         )}
 
