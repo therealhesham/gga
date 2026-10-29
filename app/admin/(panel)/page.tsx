@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { Briefcase, HardHat, Inbox, MailOpen, Timer } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getSettings } from "@/lib/data";
@@ -8,6 +9,7 @@ import { Card, PageHeader } from "@/components/admin/Ui";
 import { formatDate } from "@/lib/format";
 
 export default async function DashboardPage() {
+  await connection();
   const [total, unread, projects, services, latest] = await Promise.all([
     prisma.inquiry.count(),
     prisma.inquiry.count({ where: { status: "NEW" } }),

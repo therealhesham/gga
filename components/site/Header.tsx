@@ -37,7 +37,6 @@ export function Header({ settings }: { settings: SiteSettingsData }) {
       <HeaderBar
         companyName={settings.companyName}
         companyTagline={settings.companyTagline}
-        logoUrl={settings.logoUrl}
         ctaLabel={settings.navCtaLabel}
       />
     </header>

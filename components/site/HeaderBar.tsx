@@ -7,11 +7,10 @@ import { NAV_ITEMS, SECTION_IDS } from "@/lib/constants";
 type Props = {
   companyName: string;
   companyTagline: string;
-  logoUrl: string;
   ctaLabel: string;
 };
 
-export function HeaderBar({ companyName, companyTagline, logoUrl, ctaLabel }: Props) {
+export function HeaderBar({ companyName, companyTagline, ctaLabel }: Props) {
   const [active, setActive] = useState<string>(SECTION_IDS.hero);
   const [open, setOpen] = useState(false);
 
@@ -42,14 +41,15 @@ export function HeaderBar({ companyName, companyTagline, logoUrl, ctaLabel }: Pr
           href={`#${SECTION_IDS.hero}`}
           className="flex items-center gap-3.5 shrink-0"
         >
-          {logoUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              alt={companyName}
-              src={logoUrl}
-              className="size-9 rounded-full object-cover ring-2 ring-primary/30"
-            />
-          )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            alt=""
+            src="/logo-mark.png"
+            width={600}
+            height={357}
+            className="h-10 sm:h-12 w-auto shrink-0"
+          />
+          <span aria-hidden="true" className="h-9 w-px bg-primary/30" />
           <div className="flex flex-col text-right">
             <span className="text-title-lg font-bold text-on-surface tracking-wide leading-tight">
               {companyName}
