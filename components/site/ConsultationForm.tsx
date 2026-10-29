@@ -186,13 +186,13 @@ export function ConsultationForm() {
 
       <div aria-live="polite">
         {state.status === "success" && (
-          <div className="flex items-center justify-center gap-2 rounded-2xl p-4 border border-gold text-gold text-center font-semibold text-sm">
+          <div className="flex items-center justify-center gap-2 p-4 border border-gold text-gold text-center font-semibold text-sm">
             <CircleCheck className="size-5 shrink-0" />
             تم استلام طلبكم بنجاح. سيتواصل معكم أحد مهندسينا التنفيذيين خلال 24 ساعة.
           </div>
         )}
         {state.status === "error" && (
-          <div className="flex items-center justify-center gap-2 rounded-2xl p-4 bg-error-container border border-error text-on-error-container text-center font-bold text-sm">
+          <div className="flex items-center justify-center gap-2 p-4 bg-error-container border border-error text-on-error-container text-center font-bold text-sm">
             <CircleAlert className="size-5 shrink-0" />
             {state.message}
           </div>

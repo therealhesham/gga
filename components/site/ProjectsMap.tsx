@@ -8,7 +8,7 @@ import { KSA_CITIES, KSA_PATH, KSA_VIEWBOX, matchCity } from "@/lib/ksa";
 import { EASE } from "@/lib/motion";
 import { CountUp } from "./CountUp";
 import { Img } from "./Img";
-import { Reveal } from "./Reveal";
+import { Reveal, RevealHeading } from "./Reveal";
 import { SectionEyebrow } from "./SectionEyebrow";
 
 type MapProject = {
@@ -39,21 +39,19 @@ export function ProjectsMap({ projects }: { projects: MapProject[] }) {
   return (
     <section
       id="projects-map"
-      className="snap-section relative w-full min-h-svh flex items-center bg-ink text-white py-24 md:py-28 overflow-hidden"
+      className="snap-section relative w-full min-h-svh flex items-center bg-ink text-white py-24 md:py-32 overflow-hidden"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-40 top-1/4 size-[34rem] rounded-full bg-gold/10 blur-[150px]"
-      />
       <div className="relative max-w-7xl mx-auto w-full px-margin-mobile md:px-margin">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           <div className="lg:col-span-5 order-2 lg:order-1">
             <Reveal>
-              <SectionEyebrow dark>حضور وطني</SectionEyebrow>
-              <h2 className="font-display font-medium text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.4]">
-                مشاريعنا في أنحاء المملكة
-              </h2>
-              <p className="mt-5 text-base font-light leading-8 text-white/60 max-w-md">
+              <SectionEyebrow index="04" dark>
+                حضور وطني
+              </SectionEyebrow>
+            </Reveal>
+            <RevealHeading size="text-[clamp(2rem,3.6vw,3.2rem)]">مشاريعنا في أنحاء المملكة</RevealHeading>
+            <Reveal delay={150}>
+              <p className="mt-6 text-base font-light leading-8 text-white/60 max-w-md">
                 <span className="font-display text-gold-soft text-xl">
                   <CountUp text={String(projects.length)} />
                 </span>{" "}
@@ -104,7 +102,7 @@ export function ProjectsMap({ projects }: { projects: MapProject[] }) {
                       <li key={p.id}>
                         <Link
                           href={`/projects/${p.id}`}
-                          data-cursor="استعرض"
+                         
                           className="group flex items-center gap-4 py-3.5"
                         >
                           <span className="relative size-16 shrink-0 overflow-hidden bg-ink-soft">
@@ -179,13 +177,16 @@ export function ProjectsMap({ projects }: { projects: MapProject[] }) {
                     className="cursor-pointer outline-none"
                   >
                     <circle r="30" fill="transparent" />
-                    <motion.circle
-                      r="9"
-                      fill="#d8b565"
-                      fillOpacity="0.35"
-                      animate={{ r: [9, 30], opacity: [0.7, 0] }}
-                      transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut", delay: i * 0.3 }}
-                    />
+                    {/* نبض هادئ للمدينة المختارة فقط */}
+                    {on && (
+                      <motion.circle
+                        r="9"
+                        fill="#d8b565"
+                        fillOpacity="0.3"
+                        animate={{ r: [9, 34], opacity: [0.6, 0] }}
+                        transition={{ duration: 2.8, repeat: Infinity, ease: "easeOut" }}
+                      />
+                    )}
                     <circle r={on ? 11 : 7} fill="#d8b565" className="transition-all duration-300" />
                     {on && <circle r="19" fill="none" stroke="#d8b565" strokeWidth="1.2" />}
                     {g.items.length > 1 && (

@@ -6,7 +6,7 @@ import { motion, useMotionValue, useSpring } from "motion/react";
 /** يجذب العنصر بلطف نحو المؤشر (للماوس فقط) */
 export function Magnetic({
   children,
-  strength = 0.3,
+  strength = 0.18,
   className = "inline-block",
 }: {
   children: React.ReactNode;

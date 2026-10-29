@@ -2,19 +2,33 @@ import { ACCREDITATIONS } from "@/lib/constants";
 import { Icon } from "@/lib/icons";
 import { Marquee } from "./Marquee";
 
-/** شريط اعتمادات أحادي اللون (ذهبي/أبيض بشفافية منخفضة) أسفل إحصاءات الهيرو */
+function Item({ icon, label }: { icon: string; label: string }) {
+  return (
+    <span className="flex items-center gap-2.5 text-[13px] font-light text-white/50">
+      <Icon name={icon} className="size-4 text-white/40 [stroke-width:1.4]" />
+      <span className="whitespace-nowrap">{label}</span>
+    </span>
+  );
+}
+
+/** شريط اعتمادات أحادي اللون أسفل إحصاءات الهيرو: صف ثابت على الشاشات الكبيرة، وشريط متحرك بطيء على الجوال */
 export function Accreditations() {
   return (
-    <div className="mt-3 md:mt-4" aria-label="الاعتمادات والشراكات">
-      <Marquee duration={44}>
+    <div className="mt-4" aria-label="الاعتمادات والشراكات">
+      <div className="hidden lg:flex items-center justify-between gap-6 px-7 py-2">
         {ACCREDITATIONS.map((a) => (
-          <span key={a.label} className="flex items-center gap-2.5 px-6 md:px-9 py-2 text-[13px] font-light text-white/50">
-            <Icon name={a.icon} className="size-[18px] text-gold-soft/70 [stroke-width:1.4]" />
-            <span className="whitespace-nowrap tracking-wide">{a.label}</span>
-            <span aria-hidden="true" className="ms-6 md:ms-9 size-1 rounded-full bg-white/20" />
-          </span>
+          <Item key={a.label} {...a} />
         ))}
-      </Marquee>
+      </div>
+      <div className="lg:hidden">
+        <Marquee duration={56}>
+          {ACCREDITATIONS.map((a) => (
+            <span key={a.label} className="px-6 py-2">
+              <Item {...a} />
+            </span>
+          ))}
+        </Marquee>
+      </div>
     </div>
   );
 }

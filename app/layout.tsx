@@ -1,18 +1,13 @@
 import type { Metadata } from "next";
-import { Cairo, Geist_Mono, Noto_Kufi_Arabic } from "next/font/google";
+import { Geist_Mono, Tajawal } from "next/font/google";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const cairo = Cairo({
-  variable: "--font-cairo",
+// خط الموقع للعناوين والنصوص (Tajawal لا يوفّر وزن 600، فيُستخدم 500 أو 700)
+const tajawal = Tajawal({
+  variable: "--font-tajawal",
   subsets: ["arabic", "latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-});
-
-// خط العناوين: كوفي هندسي نظيف يناسب هوية المقاولات
-const kufi = Noto_Kufi_Arabic({
-  variable: "--font-kufi",
-  subsets: ["arabic"],
-  weight: ["400", "500", "600"],
+  weight: ["200", "300", "400", "500", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -21,9 +16,37 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "غسان غازي الميمني للمقاولات العامة | GGA Contracting",
-  description:
-    "مؤسسة غسان غازي الميمني للمقاولات العامة: حلول إنشائية متكاملة، أبراج ومجمعات تجارية وسكنية، وبنية تحتية في المملكة العربية السعودية.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME} | GGA Contracting`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: [
+    "مقاولات عامة",
+    "شركة مقاولات في الرياض",
+    "مقاول معتمد",
+    "إنشاء أبراج تجارية",
+    "قصور ومجمعات سكنية",
+    "بنية تحتية",
+    "تشطيبات فاخرة",
+    "GGA Contracting",
+  ],
+  openGraph: {
+    type: "website",
+    locale: "ar_SA",
+    siteName: SITE_NAME,
+    title: `${SITE_NAME} | GGA Contracting`,
+    description: SITE_DESCRIPTION,
+    url: "/",
+  },
+  twitter: { card: "summary_large_image" },
+  formatDetection: { telephone: false },
+  // رمز التحقق من Google Search Console (يُضاف في .env عند التسجيل)
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -31,7 +54,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="ar"
       dir="rtl"
-      className={`${cairo.variable} ${kufi.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${tajawal.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
         {children}

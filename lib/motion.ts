@@ -9,8 +9,8 @@ export const stagger = (gap = 0.12, delay = 0) => ({
 
 /** ظهور من الأسفل مع تلاشي */
 export const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
-  show: { opacity: 1, y: 0, transition: { duration: 1, ease: EASE } },
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE } },
 };
 
 /** سطر عنوان يُكشف من الأسفل (clip-path بحدود سالبة كي لا تُقص الحروف العالية) */

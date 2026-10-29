@@ -13,10 +13,9 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
-import { EASE } from "@/lib/motion";
 import { FILTER_EVENT } from "@/lib/service-filter";
 import { Img } from "./Img";
-import { Magnetic } from "./Magnetic";
+import { RevealHeading, apertureVariants, settleVariants } from "./Reveal";
 import { SectionEyebrow } from "./SectionEyebrow";
 
 type ProjectItem = {
@@ -160,10 +159,10 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
           >
             {/* لوحة العنوان والفلتر */}
             <div className="snap-start shrink-0 w-[82vw] sm:w-[420px] flex flex-col justify-center pe-2 md:pe-8">
-              <SectionEyebrow>{eyebrow}</SectionEyebrow>
-              <h2 className="font-display font-medium text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.4] text-ink">
+              <SectionEyebrow index="03">{eyebrow}</SectionEyebrow>
+              <RevealHeading size="text-[clamp(2rem,3.4vw,3.1rem)]" className="text-ink">
                 {title}
-              </h2>
+              </RevealHeading>
 
               {categories.length > 0 && (
                 <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-ink/10">
@@ -200,27 +199,30 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
             {visible.map((p, i) => (
               <motion.div
                 key={p.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: i * 0.06, ease: EASE }}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.25 }}
+                variants={apertureVariants}
                 className="snap-start shrink-0"
               >
                 <Link
                   href={`/projects/${p.id}`}
-                  data-cursor="استعرض"
-                  className="group relative block h-[min(64svh,620px)] w-[78vw] sm:w-[54vw] lg:w-[36vw] overflow-hidden bg-ink"
+                 
+                  className="group relative block aspect-[4/5] w-[78vw] sm:w-[46vw] pinned:w-auto pinned:h-[min(66svh,640px)] overflow-hidden bg-ink"
                 >
-                  <Img
-                    src={p.imageUrl}
-                    alt={p.title}
-                    sizes="(min-width: 1024px) 36vw, 80vw"
-                    className="object-cover transition-transform duration-[1600ms] ease-out group-hover:scale-[1.07]"
-                  />
+                  <motion.div variants={settleVariants} className="absolute inset-0">
+                    <Img
+                      src={p.imageUrl}
+                      alt={p.title}
+                      sizes="(min-width: 1024px) 30vw, 80vw"
+                      className="object-cover transition-transform duration-[1600ms] ease-out group-hover:scale-[1.05]"
+                    />
+                  </motion.div>
                   <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-ink/10" />
                   <span aria-hidden="true" className="cad-grid group-hover:opacity-100" />
 
                   <div className="absolute inset-x-0 top-0 z-10 flex items-start justify-between p-5 md:p-6">
-                    <span className="font-display text-3xl text-white/40 leading-none tabular-nums">
+                    <span className="font-mono text-xs font-light tracking-[0.2em] text-white/60 tabular-nums">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <div className="flex items-center gap-2">
@@ -243,10 +245,10 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
 
                   <div className="absolute inset-x-0 bottom-0 z-10 p-5 md:p-7 text-white">
                     <div className="flex items-center justify-between gap-3 text-sm mb-2">
-                      <span className="font-medium text-gold-soft">{p.kind}</span>
+                      <span className="font-medium text-white/75">{p.kind}</span>
                       {p.meta && <span className="font-light text-white/60">{p.meta}</span>}
                     </div>
-                    <h3 className="font-display text-xl md:text-[1.7rem] font-medium leading-snug">
+                    <h3 className="font-display text-xl md:text-2xl font-normal leading-snug">
                       {p.title}
                     </h3>
                     <p className="mt-3 text-sm font-light leading-7 text-white/70 line-clamp-2 max-w-md">
@@ -256,7 +258,7 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
                       <ul className="mt-4 pt-3 border-t border-white/15 flex flex-wrap gap-x-5 gap-y-1.5 text-xs font-light text-white/75">
                         {p.features.slice(0, 3).map((f, k) => (
                           <li key={k} className="flex items-center gap-1.5">
-                            <Icon name={f.icon} className="size-3.5 text-gold-soft [stroke-width:1.5]" />
+                            <Icon name={f.icon} className="size-3.5 text-white/50 [stroke-width:1.5]" />
                             {f.text}
                           </li>
                         ))}
@@ -270,7 +272,6 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
             {/* لوحة الختام */}
             {cta && (
               <div className="snap-start shrink-0 w-[70vw] sm:w-[340px] flex flex-col items-start justify-center ps-2 md:ps-8 pe-margin-mobile md:pe-margin">
-                <Magnetic>
                   <a
                     href={`#${SECTION_IDS.contact}`}
                     className="group inline-flex items-center gap-3 rounded-full px-9 py-4 border border-ink/80 text-ink text-sm font-semibold hover:bg-ink hover:text-ivory transition-colors duration-500"
@@ -278,7 +279,6 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
                     <span>{cta}</span>
                     <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
                   </a>
-                </Magnetic>
               </div>
             )}
           </motion.div>
@@ -287,7 +287,7 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
         {/* مؤشر التقدم (للمعرض المثبّت وللكاروسيل) */}
         {visible.length > 0 && (
           <div className="mt-6 px-margin-mobile md:px-margin flex items-center gap-5 pinned:absolute pinned:bottom-6 pinned:inset-x-0 pinned:mt-0">
-            <span className="font-display text-sm text-ink/60 tabular-nums">
+            <span className="font-mono text-xs tracking-[0.15em] text-ink/60 tabular-nums">
               {String(index + 1).padStart(2, "0")}
               <span className="text-ink/30"> / {String(visible.length).padStart(2, "0")}</span>
             </span>

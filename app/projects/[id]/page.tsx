@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { ArrowLeft, MapPin, Ruler } from "lucide-react";
+import { MapPin, Ruler } from "lucide-react";
 import { getSiteData } from "@/lib/data";
 import { Icon } from "@/lib/icons";
 import { Chrome } from "@/components/site/Chrome";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { Img } from "@/components/site/Img";
-import { Magnetic } from "@/components/site/Magnetic";
+import { JsonLd, projectBreadcrumbLd } from "@/components/site/JsonLd";
 import { MotionRoot } from "@/components/site/MotionRoot";
 import { Reveal } from "@/components/site/Reveal";
 
@@ -27,11 +27,14 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   if (!project) return { title: "المشروع غير موجود" };
   const description = project.description.replace(/\s+/g, " ").slice(0, 160);
   return {
-    title: `${project.title} | ${data.settings.companyName}`,
+    title: project.title,
     description,
+    alternates: { canonical: `/projects/${project.id}` },
     openGraph: {
+      type: "article",
       title: project.title,
       description,
+      url: `/projects/${project.id}`,
       images: project.imageUrl ? [project.imageUrl] : undefined,
     },
   };
@@ -56,6 +59,7 @@ async function ProjectContent({ params }: { params: Params }) {
 
   return (
     <>
+      <JsonLd data={projectBreadcrumbLd(project)} />
       <Chrome />
       <Header settings={settings} home={false} />
 
@@ -90,18 +94,18 @@ async function ProjectContent({ params }: { params: Params }) {
                   </span>
                 )}
               </div>
-              <h1 className="font-display font-medium text-[clamp(2rem,5vw,4.2rem)] leading-[1.3] max-w-4xl">
+              <h1 className="font-display font-light text-[clamp(2.2rem,5.4vw,4.6rem)] leading-[1.22] tracking-[-0.015em] max-w-4xl">
                 {project.title}
               </h1>
               <div className="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-sm font-light text-white/70">
                 {project.location && (
                   <span className="flex items-center gap-2">
-                    <MapPin className="size-4 text-gold-soft" /> {project.location}
+                    <MapPin className="size-4 text-white/50" /> {project.location}
                   </span>
                 )}
                 {project.meta && (
                   <span className="flex items-center gap-2">
-                    <Ruler className="size-4 text-gold-soft" /> {project.meta}
+                    <Ruler className="size-4 text-white/50" /> {project.meta}
                   </span>
                 )}
               </div>
@@ -110,7 +114,7 @@ async function ProjectContent({ params }: { params: Params }) {
         </section>
 
         {/* الوصف والمواصفات */}
-        <section className="py-20 md:py-28">
+        <section className="py-24 md:py-32">
           <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-24">
             <Reveal className="lg:col-span-7">
               <span className="flex items-center gap-3 mb-6 text-sm font-medium text-gold">
@@ -142,7 +146,7 @@ async function ProjectContent({ params }: { params: Params }) {
                 <ul className="mt-8 grid grid-cols-1 gap-4">
                   {project.features.map((f, i) => (
                     <li key={i} className="flex items-center gap-3 text-base font-light text-ink/75">
-                      <Icon name={f.icon} className="size-5 text-gold shrink-0 [stroke-width:1.5]" />
+                      <Icon name={f.icon} className="size-5 text-ink/45 shrink-0 [stroke-width:1.4]" />
                       {f.text}
                     </li>
                   ))}
@@ -152,44 +156,21 @@ async function ProjectContent({ params }: { params: Params }) {
           </div>
         </section>
 
-        {/* دعوة للتواصل */}
-        <section className="bg-ink text-white py-20 md:py-24">
-          <Reveal className="max-w-4xl mx-auto px-margin-mobile text-center">
-            <h2 className="font-display font-medium text-[clamp(1.7rem,3.4vw,2.8rem)] leading-[1.4]">
-              هل لديك مشروع بهذا المستوى؟
-            </h2>
-            <p className="mt-4 text-base font-light leading-8 text-white/60">
-              فريقنا الهندسي جاهز لدراسة مخططاتك وتقديم تسعير تفصيلي خلال 48 ساعة عمل.
-            </p>
-            <div className="mt-9">
-              <Magnetic>
-                <Link
-                  href="/#consultation-booking"
-                  className="group inline-flex items-center gap-3 rounded-full px-9 py-4 bg-gold-soft text-ink text-sm font-bold hover:bg-white transition-colors duration-300"
-                >
-                  {settings.navCtaLabel || "اطلب استشارة"}
-                  <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
-                </Link>
-              </Magnetic>
-            </div>
-          </Reveal>
-        </section>
-
         {/* مشاريع أخرى */}
         {others.length > 0 && (
-          <section className="py-20 md:py-28">
+          <section className="py-24 md:py-32">
             <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin">
               <Reveal className="mb-12">
                 <span className="flex items-center gap-3 mb-4 text-sm font-medium text-gold">
                   <span className="h-px w-10 bg-gold" /> مشاريع أخرى
                 </span>
-                <h2 className="font-display font-medium text-[clamp(1.7rem,3vw,2.6rem)]">من أعمالنا</h2>
+                <h2 className="font-display font-normal text-[clamp(2rem,3.4vw,3rem)]">من أعمالنا</h2>
               </Reveal>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {others.map((p, i) => (
                   <Reveal key={p.id} delay={i * 100}>
-                    <Link href={`/projects/${p.id}`} data-cursor="استعرض" className="group block">
-                      <span className="relative block aspect-[4/3] overflow-hidden bg-ivory-deep">
+                    <Link href={`/projects/${p.id}`} className="group block">
+                      <span className="relative block aspect-[4/5] overflow-hidden bg-ivory-deep">
                         <Img
                           src={p.imageUrl}
                           alt={p.title}

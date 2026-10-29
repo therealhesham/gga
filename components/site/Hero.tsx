@@ -28,7 +28,7 @@ export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) 
         <div className="absolute inset-0 bg-gradient-to-l from-ink/80 via-ink/40 to-ink/5" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-transparent via-40% to-ink/45" />
       </div>
-      <Particles className="absolute inset-0 -z-[5] size-full opacity-55" />
+      <Particles className="absolute inset-0 -z-[5] size-full opacity-40" />
 
       <ParallaxLayer
         distance={-70}
@@ -41,27 +41,27 @@ export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) 
               <motion.span
                 variants={{ hidden: { scaleX: 0 }, show: { scaleX: 1, transition: { duration: 1 } } }}
                 style={{ transformOrigin: "right" }}
-                className="h-px w-12 bg-gold-soft"
+                className="h-px w-12 bg-gold-soft/80"
               />
-              <span className="text-sm font-medium text-gold-soft">{settings.heroOverline}</span>
+              <span className="text-sm font-medium text-white/85">{settings.heroOverline}</span>
               {settings.heroOverlineSub && (
                 <span className="text-sm font-light text-white/60">{settings.heroOverlineSub}</span>
               )}
             </motion.div>
 
-            <h1 className="font-display font-medium text-[clamp(2.1rem,min(4.9vw,8.2vh),4.2rem)] leading-[1.3] mb-6">
+            <h1 className="font-display font-light text-[clamp(2.3rem,min(5.4vw,8.8vh),4.9rem)] leading-[1.22] tracking-[-0.015em] mb-7">
               <motion.span variants={lineReveal} className="block">
                 {settings.heroTitleLine1}
               </motion.span>
               <motion.span variants={lineReveal} className="block">
-                <span className="text-gold-soft">{settings.heroTitleHighlight}</span>{" "}
+                <span className="font-normal text-gold-soft">{settings.heroTitleHighlight}</span>{" "}
                 {settings.heroTitleSuffix}
               </motion.span>
             </h1>
 
             <motion.p
               variants={fadeUp}
-              className="text-base md:text-lg font-light leading-8 text-white/75 max-w-xl mb-8"
+              className="text-base md:text-lg font-light leading-8 text-white/70 max-w-xl mb-9"
             >
               {settings.heroSubtitle}
             </motion.p>
@@ -91,7 +91,7 @@ export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) 
           {stats.length > 0 && (
             <motion.dl
               variants={stagger(0.1, 0.15)}
-              className="mt-[clamp(1.25rem,4vh,3rem)] grid grid-cols-2 lg:grid-cols-4 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md shadow-[0_20px_60px_-30px_rgba(0,0,0,0.8)]"
+              className="mt-[clamp(1.25rem,4vh,3rem)] grid grid-cols-2 lg:grid-cols-4 border border-white/10 bg-black/40 backdrop-blur-md"
             >
               {stats.map((stat) => (
                 <motion.div
@@ -103,20 +103,20 @@ export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) 
                   <dd className="flex flex-col gap-1.5">
                     {stat.icon ? (
                       <span className="flex items-center gap-2.5">
-                        <Icon name={stat.icon} className="size-6 text-gold-soft shrink-0 [stroke-width:1.4]" />
-                        <span className="font-display text-xl md:text-2xl font-semibold tabular-nums">
+                        <Icon name={stat.icon} className="size-5 text-white/55 shrink-0 [stroke-width:1.3]" />
+                        <span className="font-display text-xl md:text-2xl font-normal tabular-nums">
                           <CountUp text={stat.value} />
                         </span>
                       </span>
                     ) : (
                       <span className="flex items-baseline gap-2">
-                        <span className="font-display text-3xl md:text-[clamp(2rem,5vh,3rem)] font-semibold text-gold-soft tabular-nums">
+                        <span className="font-display text-3xl md:text-[clamp(2rem,5vh,3rem)] font-light tabular-nums">
                           <CountUp text={stat.value} />
                         </span>
                         {stat.unit && <span className="text-sm font-light text-white/60">{stat.unit}</span>}
                       </span>
                     )}
-                    <span className="text-sm font-light text-white/60" aria-hidden="true">
+                    <span className="text-sm font-light text-white/55" aria-hidden="true">
                       {stat.label}
                     </span>
                   </dd>

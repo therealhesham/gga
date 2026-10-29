@@ -63,7 +63,7 @@ export function FileDrop({ name = "files" }: { name?: string }) {
           setDrag(false);
           add(Array.from(e.dataTransfer.files));
         }}
-        className={`flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-dashed px-6 py-8 text-center transition-colors duration-300 ${
+        className={`flex cursor-pointer flex-col items-center gap-2 border border-dashed px-6 py-8 text-center transition-colors duration-300 ${
           drag ? "border-gold bg-gold/10" : "border-ink/25 hover:border-gold hover:bg-gold/5"
         }`}
       >

@@ -15,10 +15,14 @@ import { Chrome } from "@/components/site/Chrome";
 import { Intro } from "@/components/site/Intro";
 import { ProjectsMap } from "@/components/site/ProjectsMap";
 import { MotionRoot } from "@/components/site/MotionRoot";
+import { ImageBand } from "@/components/site/ImageBand";
+import { JsonLd, organizationLd } from "@/components/site/JsonLd";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { settings } = await getSiteData();
-  return settings.comingSoonEnabled ? { robots: { index: false, follow: false } } : {};
+  return settings.comingSoonEnabled
+    ? { robots: { index: false, follow: false } }
+    : { alternates: { canonical: "/" } };
 }
 
 export default async function Home() {
@@ -30,6 +34,7 @@ export default async function Home() {
 
   return (
     <MotionRoot>
+      <JsonLd data={organizationLd(settings)} />
       <Intro />
       <Chrome />
       <Header settings={settings} />
@@ -38,6 +43,11 @@ export default async function Home() {
         <div className="flex flex-col w-full text-ink">
           <Hero settings={settings} stats={data.stats} />
           <About settings={settings} pillars={data.pillars} />
+          <ImageBand
+            src={settings.heroImage || "/images/hero.webp"}
+            label="GGA — CONTRACTING"
+            caption="نبني بإتقان، لنصنع معالم تدوم"
+          />
           <Services settings={settings} services={data.services} categories={data.categories} />
           <Projects
             eyebrow={settings.projectsEyebrow}

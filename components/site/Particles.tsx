@@ -21,7 +21,7 @@ type Dot = {
 };
 
 /**
- * غبار ذهبي هادئ يتصاعد ببطء مع خيوط رفيعة بين الجسيمات القريبة،
+ * غبار ذهبي خفيف يتصاعد ببطء كذرات في ضوء الموقع (بدون خطوط شبكية)،
  * ويتجاوب بلطف مع حركة المؤشر. يتوقف خارج الشاشة ومع تقليل الحركة.
  */
 export function Particles({ className = "", color = GOLD }: Props) {
@@ -45,10 +45,10 @@ export function Particles({ className = "", color = GOLD }: Props) {
     const spawn = (initial: boolean): Dot => ({
       x: Math.random() * w,
       y: initial ? Math.random() * h : h + 10,
-      r: 0.6 + Math.random() * 1.8,
-      vx: (Math.random() - 0.5) * 0.18,
-      vy: -(0.08 + Math.random() * 0.32),
-      a: 0.25 + Math.random() * 0.55,
+      r: 0.5 + Math.random() * 1.3,
+      vx: (Math.random() - 0.5) * 0.12,
+      vy: -(0.05 + Math.random() * 0.2),
+      a: 0.2 + Math.random() * 0.45,
       phase: Math.random() * Math.PI * 2,
     });
 
@@ -60,11 +60,9 @@ export function Particles({ className = "", color = GOLD }: Props) {
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.round(Math.min(70, Math.max(26, (w * h) / 22000)));
+      const count = Math.round(Math.min(36, Math.max(14, (w * h) / 40000)));
       dots = Array.from({ length: count }, () => spawn(true));
     };
-
-    const LINK = 120;
 
     const frame = (t: number) => {
       ctx.clearRect(0, 0, w, h);
@@ -82,22 +80,6 @@ export function Particles({ className = "", color = GOLD }: Props) {
           d.y += (dy / dist) * f;
         }
         if (d.y < -10 || d.x < -20 || d.x > w + 20) Object.assign(d, spawn(false));
-      }
-
-      ctx.lineWidth = 0.6;
-      for (let i = 0; i < dots.length; i++) {
-        for (let j = i + 1; j < dots.length; j++) {
-          const dx = dots[i].x - dots[j].x;
-          const dy = dots[i].y - dots[j].y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < LINK) {
-            ctx.strokeStyle = `rgba(${cr},${cg},${cb},${(1 - dist / LINK) * 0.16})`;
-            ctx.beginPath();
-            ctx.moveTo(dots[i].x, dots[i].y);
-            ctx.lineTo(dots[j].x, dots[j].y);
-            ctx.stroke();
-          }
-        }
       }
 
       for (const d of dots) {

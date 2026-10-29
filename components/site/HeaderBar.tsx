@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { BadgeCheck, MapPin, Menu, Phone, X } from "lucide-react";
 import { NAV_ITEMS, SECTION_IDS } from "@/lib/constants";
 import { EASE } from "@/lib/motion";
-import { Magnetic } from "./Magnetic";
 import { useActiveSection } from "./useActiveSection";
 
 type Props = {
@@ -33,9 +32,6 @@ export function HeaderBar({
   const base = home ? "" : "/";
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  // شريط تقدم القراءة أسفل الهيدر
-  const { scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.4 });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -58,12 +54,6 @@ export function HeaderBar({
           : "bg-gradient-to-b from-ink/75 via-ink/30 to-transparent text-white"
       }`}
     >
-      <motion.div
-        aria-hidden="true"
-        style={{ scaleX: progress, transformOrigin: "right" }}
-        className="absolute inset-x-0 bottom-0 h-[2px] bg-gold-soft"
-      />
-
       {/* شريط المعلومات: يختفي بنعومة عند التمرير */}
       <div
         className={`overflow-hidden transition-all duration-500 ${
@@ -126,7 +116,7 @@ export function HeaderBar({
           </span>
           <span aria-hidden="true" className={`h-8 w-px ${solid ? "bg-ink/15" : "bg-white/25"}`} />
           <span className="flex flex-col leading-tight">
-            <span className="font-display text-[17px] sm:text-lg font-semibold">{companyName}</span>
+            <span className="font-display text-[17px] sm:text-lg font-medium">{companyName}</span>
             <span
               className={`text-[11px] font-light mt-0.5 ${solid ? "text-gold" : "text-gold-soft"}`}
             >
@@ -166,10 +156,9 @@ export function HeaderBar({
 
         <div className="flex items-center gap-3">
           {ctaLabel && (
-            <Magnetic className="hidden sm:inline-block" strength={0.25}>
             <a
               href={`${base}#${SECTION_IDS.contact}`}
-              className={`inline-flex items-center rounded-full px-6 py-2.5 text-sm font-semibold transition-colors duration-300 ${
+              className={`hidden sm:inline-flex items-center rounded-full px-6 py-2.5 text-sm font-semibold transition-colors duration-300 ${
                 solid
                   ? "bg-ink text-ivory hover:bg-gold hover:text-white"
                   : "bg-gold-soft text-ink hover:bg-white"
@@ -177,7 +166,6 @@ export function HeaderBar({
             >
               {ctaLabel}
             </a>
-            </Magnetic>
           )}
           <button
             type="button"

@@ -4,11 +4,10 @@ import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
 import { CONTACT } from "@/lib/contact";
 import { hasProfilePdf } from "@/lib/profile";
-import { EASE } from "@/lib/motion";
 import type { SiteData } from "@/lib/data";
 import { Img } from "./Img";
 import { Blueprint } from "./Blueprint";
-import { Reveal } from "./Reveal";
+import { Reveal, RevealHeading, apertureVariants, settleVariants } from "./Reveal";
 import { ScrollText } from "./ScrollText";
 import { SectionEyebrow } from "./SectionEyebrow";
 
@@ -16,10 +15,10 @@ export function About({ settings, pillars }: Pick<SiteData, "settings" | "pillar
   return (
     <section
       id={SECTION_IDS.about}
-      className="snap-section relative w-full min-h-svh flex items-center bg-ivory py-24 md:py-28"
+      className="snap-section relative w-full min-h-svh flex items-center bg-ivory py-24 md:py-32"
     >
       {/* مخطط هندسي يُرسم تباعًا مع التمرير */}
-      <Blueprint className="pointer-events-none absolute left-0 top-16 bottom-0 hidden h-[86%] w-auto text-gold/25 lg:block" />
+      <Blueprint className="pointer-events-none absolute left-0 top-16 bottom-0 hidden h-[86%] w-auto text-gold/20 lg:block" />
       <div className="relative max-w-7xl mx-auto w-full px-margin-mobile md:px-margin">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-20 items-center">
           <div className="lg:col-span-5">
@@ -34,24 +33,23 @@ export function About({ settings, pillars }: Pick<SiteData, "settings" | "pillar
               <motion.div
                 aria-hidden="true"
                 variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 1.2, delay: 0.5 } } }}
-                className="absolute inset-0 translate-x-2.5 translate-y-2.5 lg:-translate-x-5 lg:translate-y-5 border border-gold/50"
+                className="absolute inset-0 translate-x-2.5 translate-y-2.5 lg:-translate-x-5 lg:translate-y-5 border border-gold/35"
               />
               <motion.div
-                variants={{
-                  hidden: { clipPath: "inset(0 0 100% 0)" },
-                  show: { clipPath: "inset(0 0 0% 0)", transition: { duration: 1.3, ease: EASE } },
-                }}
+                variants={apertureVariants}
                 className="relative aspect-[4/5] w-full overflow-hidden bg-ivory-deep"
               >
-                <Img
-                  src={settings.aboutImage}
-                  alt={settings.aboutPlaqueTitle || settings.companyName}
-                  sizes="(min-width: 1024px) 40vw, 100vw"
-                  className="object-cover"
-                />
+                <motion.div variants={settleVariants} className="absolute inset-0">
+                  <Img
+                    src={settings.aboutImage}
+                    alt={settings.aboutPlaqueTitle || settings.companyName}
+                    sizes="(min-width: 1024px) 40vw, 100vw"
+                    className="object-cover"
+                  />
+                </motion.div>
                 {settings.aboutPlaqueTitle && (
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/50 to-transparent p-6 md:p-8 pt-20 text-white">
-                    <span className="block font-display text-lg text-gold-soft mb-1">
+                    <span className="block font-display text-lg mb-1">
                       {settings.aboutPlaqueTitle}
                     </span>
                     <p className="text-sm font-light leading-7 text-white/80 max-w-sm">
@@ -63,13 +61,13 @@ export function About({ settings, pillars }: Pick<SiteData, "settings" | "pillar
             </motion.div>
           </div>
 
-          <div className="lg:col-span-7 space-y-6 lg:ps-6">
-            <Reveal>
-              <SectionEyebrow>{settings.aboutEyebrow}</SectionEyebrow>
-              <h2 className="font-display font-medium text-[clamp(2rem,4vw,3.4rem)] leading-[1.4] text-ink">
-                {settings.aboutTitle}
-              </h2>
-            </Reveal>
+          <div className="lg:col-span-7 space-y-8 lg:ps-6">
+            <div>
+              <Reveal>
+                <SectionEyebrow index="01">{settings.aboutEyebrow}</SectionEyebrow>
+              </Reveal>
+              <RevealHeading className="text-ink">{settings.aboutTitle}</RevealHeading>
+            </div>
 
             <Reveal delay={120} className="space-y-4 max-w-2xl">
               <ScrollText text={settings.aboutP1} className="text-base font-light leading-8 text-ink/80" />
@@ -97,8 +95,8 @@ export function About({ settings, pillars }: Pick<SiteData, "settings" | "pillar
                   {pillars.map((p) => (
                     <li key={p.id} className="border-t border-ink/12 pt-4">
                       <div className="flex items-center gap-3 mb-2">
-                        <Icon name={p.icon} className="size-5 text-gold shrink-0 [stroke-width:1.5]" />
-                        <h3 className="font-display text-lg font-semibold text-ink">{p.title}</h3>
+                        <Icon name={p.icon} className="size-5 text-ink/45 shrink-0 [stroke-width:1.4]" />
+                        <h3 className="font-display text-lg font-medium text-ink">{p.title}</h3>
                       </div>
                       <p className="text-sm font-light leading-7 text-ink/60">{p.description}</p>
                     </li>

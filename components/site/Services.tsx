@@ -5,7 +5,7 @@ import { SECTION_IDS } from "@/lib/constants";
 import { categoryForService } from "@/lib/service-filter";
 import { stagger } from "@/lib/motion";
 import type { SiteData } from "@/lib/data";
-import { Reveal } from "./Reveal";
+import { Reveal, RevealHeading } from "./Reveal";
 import { ServiceCard } from "./ServiceCard";
 import { SectionEyebrow } from "./SectionEyebrow";
 
@@ -17,18 +17,22 @@ export function Services({
   return (
     <section
       id={SECTION_IDS.services}
-      className="snap-section relative w-full min-h-svh flex items-center bg-ink text-white py-24 md:py-28"
+      className="snap-section relative w-full min-h-svh flex items-center bg-ink text-white py-24 md:py-32"
     >
       <div className="max-w-7xl mx-auto w-full px-margin-mobile md:px-margin">
-        <Reveal className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 md:mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 md:mb-20">
           <div>
-            <SectionEyebrow dark>{settings.servicesEyebrow}</SectionEyebrow>
-            <h2 className="font-display font-medium text-[clamp(2rem,4vw,3.4rem)] leading-[1.4]">
-              {settings.servicesTitle}
-            </h2>
+            <Reveal>
+              <SectionEyebrow index="02" dark>
+                {settings.servicesEyebrow}
+              </SectionEyebrow>
+            </Reveal>
+            <RevealHeading>{settings.servicesTitle}</RevealHeading>
           </div>
-          <p className="text-base font-light leading-8 text-white/60 max-w-md">{settings.servicesIntro}</p>
-        </Reveal>
+          <Reveal delay={150}>
+            <p className="text-base font-light leading-8 text-white/55 max-w-md">{settings.servicesIntro}</p>
+          </Reveal>
+        </div>
 
         <motion.div
           variants={stagger(0.12, 0.1)}
@@ -52,15 +56,18 @@ export function Services({
                   className="absolute bottom-0 right-0 h-px w-0 bg-gold-soft transition-all duration-700 group-hover:w-full"
                 />
                 <div className="flex items-start justify-between">
-                  <Icon name={s.icon} className="size-9 text-gold-soft [stroke-width:1.2]" />
-                  <span className="font-display text-5xl leading-none text-white/10 transition-colors duration-500 group-hover:text-gold-soft/40">
+                  <Icon
+                    name={s.icon}
+                    className="size-8 text-white/55 transition-colors duration-500 group-hover:text-gold-soft [stroke-width:1.1]"
+                  />
+                  <span className="font-mono text-xs font-light tabular-nums tracking-[0.2em] text-white/35">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>
                 <div>
-                  <h3 className="font-display text-xl font-semibold mb-3">{s.title}</h3>
+                  <h3 className="font-display text-xl font-medium mb-3">{s.title}</h3>
                   <p className="text-sm font-light leading-7 text-white/55 mb-6">{s.description}</p>
-                  <span className="inline-flex items-center gap-2 text-sm font-medium text-gold-soft">
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white/60 transition-colors duration-500 group-hover:text-gold-soft">
                     استعراض مشاريع الخدمة
                     <ArrowLeft className="size-4 transition-transform duration-500 group-hover:-translate-x-1.5" />
                   </span>
