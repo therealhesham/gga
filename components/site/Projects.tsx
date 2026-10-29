@@ -166,13 +166,13 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
                     </span>
                     <div className="flex items-center gap-2">
                       {p.location && (
-                        <span className="px-3 py-1 bg-ivory/90 backdrop-blur-sm text-ink text-xs font-medium">
+                        <span className="rounded-full px-3 py-1 bg-ivory/90 backdrop-blur-sm text-ink text-xs font-medium">
                           {p.location}
                         </span>
                       )}
                       {p.badge && (
                         <span
-                          className={`px-3 py-1 text-xs font-medium ${
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${
                             p.badgePrimary ? "bg-gold-soft text-ink" : "bg-ink/70 text-white backdrop-blur-sm"
                           }`}
                         >
@@ -214,7 +214,7 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
                 <Magnetic>
                   <a
                     href={`#${SECTION_IDS.contact}`}
-                    className="group inline-flex items-center gap-3 px-9 py-4 border border-ink/80 text-ink text-sm font-semibold hover:bg-ink hover:text-ivory transition-colors duration-500"
+                    className="group inline-flex items-center gap-3 rounded-full px-9 py-4 border border-ink/80 text-ink text-sm font-semibold hover:bg-ink hover:text-ivory transition-colors duration-500"
                   >
                     <span>{cta}</span>
                     <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />

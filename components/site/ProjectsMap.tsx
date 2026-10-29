@@ -76,7 +76,7 @@ export function ProjectsMap({ projects }: { projects: MapProject[] }) {
                       type="button"
                       onClick={() => setActiveCity(g.city)}
                       onMouseEnter={() => setActiveCity(g.city)}
-                      className={`px-4 py-2 text-sm border transition-colors duration-300 ${
+                      className={`rounded-full px-4 py-2 text-sm border transition-colors duration-300 ${
                         on
                           ? "bg-gold-soft text-ink border-gold-soft font-semibold"
                           : "border-white/20 text-white/70 hover:border-gold-soft hover:text-white"

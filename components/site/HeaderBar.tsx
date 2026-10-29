@@ -169,7 +169,7 @@ export function HeaderBar({
             <Magnetic className="hidden sm:inline-block" strength={0.25}>
             <a
               href={`${base}#${SECTION_IDS.contact}`}
-              className={`inline-flex items-center px-6 py-2.5 text-sm font-semibold transition-colors duration-300 ${
+              className={`inline-flex items-center rounded-full px-6 py-2.5 text-sm font-semibold transition-colors duration-300 ${
                 solid
                   ? "bg-ink text-ivory hover:bg-gold hover:text-white"
                   : "bg-gold-soft text-ink hover:bg-white"
@@ -217,7 +217,7 @@ export function HeaderBar({
             <a
               href={`${base}#${SECTION_IDS.contact}`}
               onClick={() => setOpen(false)}
-              className="my-5 text-center bg-ink text-ivory py-3.5 font-semibold"
+              className="my-5 text-center rounded-full bg-ink text-ivory py-3.5 font-semibold"
             >
               {ctaLabel}
             </a>

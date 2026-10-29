@@ -98,7 +98,7 @@ export function ConsultationForm() {
           {BUDGET_OPTIONS.map((b) => (
             <label
               key={b.value}
-              className="cursor-pointer border border-ink/15 hover:border-gold has-checked:border-gold has-checked:bg-gold/10 py-3.5 px-2 flex flex-col items-center transition-colors"
+              className="cursor-pointer rounded-2xl border border-ink/15 hover:border-gold has-checked:border-gold has-checked:bg-gold/10 py-3.5 px-2 flex flex-col items-center transition-colors"
             >
               <input
                 type="radio"
@@ -131,7 +131,7 @@ export function ConsultationForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full py-4 bg-ink text-ivory text-sm font-semibold hover:bg-gold hover:text-white transition-colors duration-500 flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed"
+        className="w-full rounded-full py-4 bg-ink text-ivory text-sm font-semibold hover:bg-gold hover:text-white transition-colors duration-500 flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed"
       >
         <span>{pending ? "جارٍ الإرسال..." : "إرسال الطلب للاستشاري الهندسي"}</span>
         {pending ? (

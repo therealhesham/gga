@@ -82,7 +82,7 @@ async function ProjectContent({ params }: { params: Params }) {
                 {project.kind && <span className="font-medium text-gold-soft">{project.kind}</span>}
                 {project.badge && (
                   <span
-                    className={`px-3 py-1 text-xs font-medium ${
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${
                       project.badgePrimary ? "bg-gold-soft text-ink" : "bg-white/15 text-white backdrop-blur-sm"
                     }`}
                   >
@@ -165,7 +165,7 @@ async function ProjectContent({ params }: { params: Params }) {
               <Magnetic>
                 <Link
                   href="/#consultation-booking"
-                  className="group inline-flex items-center gap-3 px-9 py-4 bg-gold-soft text-ink text-sm font-bold hover:bg-white transition-colors duration-300"
+                  className="group inline-flex items-center gap-3 rounded-full px-9 py-4 bg-gold-soft text-ink text-sm font-bold hover:bg-white transition-colors duration-300"
                 >
                   {settings.navCtaLabel || "اطلب استشارة"}
                   <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />

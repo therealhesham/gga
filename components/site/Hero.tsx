@@ -67,7 +67,7 @@ export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) 
               <Magnetic>
                 <a
                   href={`#${SECTION_IDS.projects}`}
-                  className="group inline-flex items-center gap-3 px-8 py-4 bg-gold-soft text-ink text-sm font-bold hover:bg-white transition-colors duration-300"
+                  className="group inline-flex items-center gap-3 rounded-full px-8 py-4 bg-gold-soft text-ink text-sm font-bold hover:bg-white transition-colors duration-300"
                 >
                   <span>{settings.heroPrimaryCta}</span>
                   <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
