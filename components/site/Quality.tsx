@@ -60,7 +60,7 @@ export function Quality({ settings, qualityItems, metrics, certifications }: Pro
                 <div key={m.id}>
                   <div className="flex items-end justify-between gap-4 mb-3.5">
                     <span className="text-base font-light text-white/80">{m.label}</span>
-                    <span className="font-display text-2xl md:text-3xl font-semibold text-gold-soft shrink-0">
+                    <span className="font-display text-2xl md:text-3xl font-semibold text-gold-soft shrink-0 tabular-nums">
                       <CountUp text={m.valueText} />
                     </span>
                   </div>

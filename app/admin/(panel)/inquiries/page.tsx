@@ -13,6 +13,32 @@ const FILTERS = [
   { key: "ARCHIVED", label: "الأرشيف" },
 ] as const;
 
+// يحوّل سطور "- اسم الملف [rfq:xxxx.pdf]" إلى روابط تنزيل (للأدمن فقط)
+function Details({ text }: { text: string }) {
+  return (
+    <>
+      {text.split("\n").map((line, i) => {
+        const m = line.match(/^(.*)\[rfq:([a-z0-9-]+\.[a-z0-9]+)\]\s*$/);
+        return (
+          <span key={i} className="block">
+            {m ? (
+              <a
+                href={`/api/admin/rfq/${m[2]}`}
+                className="text-primary font-semibold hover:underline"
+                download
+              >
+                {m[1].trim() || m[2]} ⬇
+              </a>
+            ) : (
+              line || "\u00a0"
+            )}
+          </span>
+        );
+      })}
+    </>
+  );
+}
+
 const STATUS_LABEL = { NEW: "جديد", READ: "مقروء", ARCHIVED: "مؤرشف" } as const;
 
 export default async function InquiriesPage({ searchParams }: PageProps<"/admin/inquiries">) {
@@ -99,7 +125,7 @@ export default async function InquiriesPage({ searchParams }: PageProps<"/admin/
 
               {q.details && (
                 <p className="text-sm text-on-surface-variant bg-surface-container-low border border-outline-variant/60 p-4 whitespace-pre-wrap mb-4">
-                  {q.details}
+                  <Details text={q.details} />
                 </p>
               )}
 

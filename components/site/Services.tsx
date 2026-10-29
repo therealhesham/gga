@@ -2,12 +2,18 @@ import * as motion from "motion/react-client";
 import { ArrowLeft } from "lucide-react";
 import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
-import { fadeUp, stagger } from "@/lib/motion";
+import { categoryForService } from "@/lib/service-filter";
+import { stagger } from "@/lib/motion";
 import type { SiteData } from "@/lib/data";
 import { Reveal } from "./Reveal";
+import { ServiceCard } from "./ServiceCard";
 import { SectionEyebrow } from "./SectionEyebrow";
 
-export function Services({ settings, services }: Pick<SiteData, "settings" | "services">) {
+export function Services({
+  settings,
+  services,
+  categories,
+}: Pick<SiteData, "settings" | "services" | "categories">) {
   return (
     <section
       id={SECTION_IDS.services}
@@ -32,14 +38,15 @@ export function Services({ settings, services }: Pick<SiteData, "settings" | "se
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t border-white/12 divide-y md:divide-y-0 divide-white/10">
             {services.map((s, i) => (
-              <motion.a
+              <ServiceCard
                 key={s.id}
-                variants={fadeUp}
+                categoryId={categoryForService(s.title, categories)}
                 href={`#${SECTION_IDS.projects}`}
                 className={`group relative flex flex-col justify-between gap-10 p-7 md:p-9 min-h-[15rem] md:min-h-[20rem] transition-colors duration-500 hover:bg-white/[0.04] md:border-b md:border-white/10 ${
                   i % 2 === 0 ? "md:border-e" : ""
                 } lg:border-e lg:last:border-e-0`}
               >
+                <span aria-hidden="true" className="cad-grid group-hover:opacity-100" />
                 <span
                   aria-hidden="true"
                   className="absolute bottom-0 right-0 h-px w-0 bg-gold-soft transition-all duration-700 group-hover:w-full"
@@ -54,11 +61,11 @@ export function Services({ settings, services }: Pick<SiteData, "settings" | "se
                   <h3 className="font-display text-xl font-semibold mb-3">{s.title}</h3>
                   <p className="text-sm font-light leading-7 text-white/55 mb-6">{s.description}</p>
                   <span className="inline-flex items-center gap-2 text-sm font-medium text-gold-soft">
-                    استعراض النماذج
+                    استعراض مشاريع الخدمة
                     <ArrowLeft className="size-4 transition-transform duration-500 group-hover:-translate-x-1.5" />
                   </span>
                 </div>
-              </motion.a>
+              </ServiceCard>
             ))}
           </div>
         </motion.div>

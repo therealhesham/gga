@@ -182,7 +182,7 @@ export const COLLECTIONS: Record<CollectionKey, Collection> = {
     secondary: "label",
     iconField: "icon",
     fields: [
-      { name: "value", label: "القيمة", type: "text", required: true, placeholder: "+٢٥" },
+      { name: "value", label: "القيمة", type: "text", required: true, placeholder: "+25" },
       { name: "unit", label: "الوحدة", type: "text", placeholder: "عاماً" },
       { name: "label", label: "الوصف", type: "text", required: true },
       {
@@ -240,9 +240,9 @@ export const COLLECTIONS: Record<CollectionKey, Collection> = {
       { name: "kind", label: "نوع المشروع", type: "text", placeholder: "مشروع تجاري ومكتبي متكامل" },
       { name: "categoryId", label: "التصنيف", type: "category" },
       { name: "location", label: "الموقع (شارة على الصورة)", type: "text" },
-      { name: "badge", label: "الشارة الثانية (الحالة/القطاع)", type: "text", placeholder: "مكتمل ٢٠٢٤" },
+      { name: "badge", label: "الشارة الثانية (الحالة/القطاع)", type: "text", placeholder: "مكتمل 2024" },
       { name: "badgePrimary", label: "إبراز الشارة الثانية بالّلون الأساسي", type: "checkbox" },
-      { name: "meta", label: "معلومة جانبية", type: "text", placeholder: "مساحة البناء: ٤٥,٠٠٠ م²" },
+      { name: "meta", label: "معلومة جانبية", type: "text", placeholder: "مساحة البناء: 45,000 م²" },
       { name: "imageUrl", label: "صورة المشروع", type: "image" },
       { name: "description", label: "الوصف", type: "textarea", required: true },
       { name: "features", label: "مميزات المشروع", type: "features", help: "تظهر أسفل البطاقة بأيقونات" },

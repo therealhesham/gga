@@ -1,6 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { prisma } from "./prisma";
+import { westernizeDeep } from "./normalize";
 
 export type Feature = { icon: string; text: string };
 
@@ -75,7 +76,7 @@ export async function getSiteData() {
     prisma.testimonial.findMany({ orderBy: byOrder }),
   ]);
 
-  return {
+  return westernizeDeep({
     settings,
     stats,
     pillars,
@@ -87,7 +88,7 @@ export async function getSiteData() {
     certifications,
     partners,
     testimonials,
-  };
+  });
 }
 
 export type SiteData = Awaited<ReturnType<typeof getSiteData>>;

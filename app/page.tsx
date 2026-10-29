@@ -31,14 +31,14 @@ export default async function Home() {
   return (
     <MotionRoot>
       <Intro />
-      <Chrome phone={settings.phone} />
+      <Chrome />
       <Header settings={settings} />
       <SectionDots />
       <main data-snap-page className="w-full bg-ivory">
         <div className="flex flex-col w-full text-ink">
           <Hero settings={settings} stats={data.stats} />
           <About settings={settings} pillars={data.pillars} />
-          <Services settings={settings} services={data.services} />
+          <Services settings={settings} services={data.services} categories={data.categories} />
           <Projects
             eyebrow={settings.projectsEyebrow}
             title={settings.projectsTitle}

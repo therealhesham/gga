@@ -28,7 +28,7 @@ export function FeaturesEditor({ name, value, onChange }: Props) {
             type="text"
             value={f.text}
             onChange={(e) => update(i, { text: e.target.value })}
-            placeholder="مثال: ٣٢ طابقاً"
+            placeholder="مثال: 32 طابقاً"
             className="flex-1 min-w-0 bg-surface-container-lowest border border-outline-variant px-3 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           />
           <button

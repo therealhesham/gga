@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { CircleAlert, CircleCheck, LoaderCircle, Send } from "lucide-react";
 import { submitInquiry, type InquiryState } from "@/app/actions/inquiry";
-import { BUDGET_OPTIONS, PROJECT_TYPES } from "@/lib/constants";
+import { RFQ_PROJECT_TYPES, RFQ_SCALES } from "@/lib/rfq";
+import { FileDrop } from "./FileDrop";
 
 const initial: InquiryState = { status: "idle" };
 
@@ -13,10 +14,16 @@ const label = "block text-sm font-medium text-ink/60";
 
 export function ConsultationForm() {
   const [state, action, pending] = useActionState(submitInquiry, initial);
+  const formRef = useRef<HTMLFormElement>(null);
   const v = state.values ?? {};
 
+  // بعد النجاح نفرّغ الحقول (والملفات تُفرَّغ بإعادة تركيب منطقة الرفع عبر key)
+  useEffect(() => {
+    if (state.status === "success") formRef.current?.reset();
+  }, [state]);
+
   return (
-    <form action={action} className="space-y-8">
+    <form ref={formRef} action={action} className="space-y-8">
       {/* مصيدة للبوتات - مخفية عن المستخدمين */}
       <input
         type="text"
@@ -27,53 +34,43 @@ export function ConsultationForm() {
         className="hidden"
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        <div className="space-y-2">
-          <label htmlFor="rfq-name" className={label}>
-            الاسم الكامل / اسم الجهة *
-          </label>
-          <input
-            id="rfq-name"
-            name="name"
-            type="text"
-            required
-            defaultValue={v.name}
-            placeholder="مثال: شركة التطوير العقاري الحديثة"
-            className={field}
-          />
+      <fieldset>
+        <legend className={label}>نوع المشروع *</legend>
+        <div className="mt-3 flex flex-wrap gap-2.5">
+          {RFQ_PROJECT_TYPES.map((t, i) => (
+            <label
+              key={t}
+              className="cursor-pointer rounded-full border border-ink/15 px-5 py-2.5 text-sm font-medium text-ink/75 transition-colors hover:border-gold has-checked:border-ink has-checked:bg-ink has-checked:text-ivory has-focus-visible:ring-2 has-focus-visible:ring-gold"
+            >
+              <input
+                type="radio"
+                name="projectType"
+                value={t}
+                required={i === 0}
+                defaultChecked={v.projectType === t}
+                className="sr-only"
+              />
+              {t}
+            </label>
+          ))}
         </div>
-        <div className="space-y-2">
-          <label htmlFor="rfq-phone" className={label}>
-            رقم الجوال للتواصل *
-          </label>
-          <input
-            id="rfq-phone"
-            name="phone"
-            type="tel"
-            dir="ltr"
-            required
-            defaultValue={v.phone}
-            placeholder="0500000000"
-            className={`${field} text-right`}
-          />
-        </div>
-      </div>
+      </fieldset>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
         <div className="space-y-2">
-          <label htmlFor="rfq-type" className={label}>
-            نوع المشروع *
+          <label htmlFor="rfq-scale" className={label}>
+            المساحة التقريبية أو الميزانية التقديرية
           </label>
-          <select
-            id="rfq-type"
-            name="projectType"
-            defaultValue={v.projectType || PROJECT_TYPES[0]}
-            className={field}
-          >
-            {PROJECT_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
+          <select id="rfq-scale" name="budget" defaultValue={v.budget ?? ""} className={field}>
+            <option value="">اختر النطاق المتوقع</option>
+            {RFQ_SCALES.map((g) => (
+              <optgroup key={g.group} label={g.group}>
+                {g.options.map((o) => (
+                  <option key={o} value={o}>
+                    {o}
+                  </option>
+                ))}
+              </optgroup>
             ))}
           </select>
         </div>
@@ -92,38 +89,84 @@ export function ConsultationForm() {
         </div>
       </div>
 
-      <fieldset className="space-y-2">
-        <legend className={label}>الميزانية التقديرية المتوقعة للمشروع</legend>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center text-xs mt-3">
-          {BUDGET_OPTIONS.map((b) => (
-            <label
-              key={b.value}
-              className="cursor-pointer rounded-2xl border border-ink/15 hover:border-gold has-checked:border-gold has-checked:bg-gold/10 py-3.5 px-2 flex flex-col items-center transition-colors"
-            >
-              <input
-                type="radio"
-                name="budget"
-                value={b.value}
-                defaultChecked={v.budget === b.value}
-                className="sr-only"
-              />
-              <span className="text-ink font-semibold">{b.value}</span>
-              <span className="text-ink/45 text-[11px] font-light">{b.hint}</span>
-            </label>
-          ))}
+      <div className="space-y-2">
+        <span className={label}>إرفاق المخططات أو كراسة الشروط (اختياري)</span>
+        <FileDrop key={state.status === "success" ? "done" : "form"} />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <div className="space-y-2">
+          <label htmlFor="rfq-name" className={label}>
+            الاسم الكامل *
+          </label>
+          <input
+            id="rfq-name"
+            name="name"
+            type="text"
+            required
+            autoComplete="name"
+            defaultValue={v.name}
+            placeholder="الاسم الثلاثي"
+            className={field}
+          />
         </div>
-      </fieldset>
+        <div className="space-y-2">
+          <label htmlFor="rfq-company" className={label}>
+            اسم الجهة / الشركة
+          </label>
+          <input
+            id="rfq-company"
+            name="company"
+            type="text"
+            autoComplete="organization"
+            defaultValue={v.company}
+            placeholder="مثال: شركة التطوير العقاري الحديثة"
+            className={field}
+          />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="rfq-phone" className={label}>
+            رقم الجوال *
+          </label>
+          <input
+            id="rfq-phone"
+            name="phone"
+            type="tel"
+            dir="ltr"
+            required
+            autoComplete="tel"
+            defaultValue={v.phone}
+            placeholder="05XXXXXXXX"
+            className={`${field} text-right`}
+          />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="rfq-email" className={label}>
+            البريد الإلكتروني
+          </label>
+          <input
+            id="rfq-email"
+            name="email"
+            type="email"
+            dir="ltr"
+            autoComplete="email"
+            defaultValue={v.email}
+            placeholder="name@company.com"
+            className={`${field} text-right`}
+          />
+        </div>
+      </div>
 
       <div className="space-y-2">
         <label htmlFor="rfq-details" className={label}>
-          تفاصيل وموجز المتطلبات الهندسية
+          ملاحظات وموجز المتطلبات الهندسية
         </label>
         <textarea
           id="rfq-details"
           name="details"
           rows={3}
           defaultValue={v.details}
-          placeholder="يرجى ذكر مساحة الأرض، عدد الأدوار، حالة التراخيص والمخططات إن وجدت..."
+          placeholder="مساحة الأرض، عدد الأدوار، حالة التراخيص والمخططات إن وجدت..."
           className={field}
         />
       </div>
@@ -133,7 +176,7 @@ export function ConsultationForm() {
         disabled={pending}
         className="w-full rounded-full py-4 bg-ink text-ivory text-sm font-semibold hover:bg-gold hover:text-white transition-colors duration-500 flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed"
       >
-        <span>{pending ? "جارٍ الإرسال..." : "إرسال الطلب للاستشاري الهندسي"}</span>
+        <span>{pending ? "جارٍ الإرسال..." : "إرسال طلب التسعير للاستشاري الهندسي"}</span>
         {pending ? (
           <LoaderCircle className="size-5 animate-spin" />
         ) : (
@@ -143,13 +186,13 @@ export function ConsultationForm() {
 
       <div aria-live="polite">
         {state.status === "success" && (
-          <div className="flex items-center justify-center gap-2 p-4 border border-gold text-gold text-center font-semibold text-sm">
+          <div className="flex items-center justify-center gap-2 rounded-2xl p-4 border border-gold text-gold text-center font-semibold text-sm">
             <CircleCheck className="size-5 shrink-0" />
-            تم استلام طلبكم بنجاح. سيتواصل معكم أحد مهندسينا التنفيذيين خلال ٢٤ ساعة.
+            تم استلام طلبكم بنجاح. سيتواصل معكم أحد مهندسينا التنفيذيين خلال 24 ساعة.
           </div>
         )}
         {state.status === "error" && (
-          <div className="flex items-center justify-center gap-2 p-4 bg-error-container border border-error text-on-error-container text-center font-bold text-sm">
+          <div className="flex items-center justify-center gap-2 rounded-2xl p-4 bg-error-container border border-error text-on-error-container text-center font-bold text-sm">
             <CircleAlert className="size-5 shrink-0" />
             {state.message}
           </div>

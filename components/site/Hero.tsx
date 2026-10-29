@@ -1,8 +1,10 @@
+import { preload } from "react-dom";
 import * as motion from "motion/react-client";
 import { ArrowDown, ArrowLeft } from "lucide-react";
 import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
 import { fadeUp, lineReveal, stagger } from "@/lib/motion";
+import { Accreditations } from "./Accreditations";
 import { CountUp } from "./CountUp";
 import { HeroReveal } from "./HeroReveal";
 import { Magnetic } from "./Magnetic";
@@ -12,6 +14,7 @@ import { ParallaxLayer } from "./ParallaxLayer";
 import { Particles } from "./Particles";
 
 export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) {
+  preload("/hero/poster.jpg", { as: "image", fetchPriority: "high" });
   return (
     <section
       id={SECTION_IDS.hero}
@@ -25,7 +28,7 @@ export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) 
         <div className="absolute inset-0 bg-gradient-to-l from-ink/80 via-ink/40 to-ink/5" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-transparent via-40% to-ink/45" />
       </div>
-      <Particles className="absolute inset-0 -z-[5] size-full" />
+      <Particles className="absolute inset-0 -z-[5] size-full opacity-55" />
 
       <ParallaxLayer
         distance={-70}
@@ -88,28 +91,26 @@ export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) 
           {stats.length > 0 && (
             <motion.dl
               variants={stagger(0.1, 0.15)}
-              className="mt-[clamp(1.5rem,5vh,3.5rem)] grid grid-cols-2 lg:grid-cols-4 border-t border-white/15"
+              className="mt-[clamp(1.25rem,4vh,3rem)] grid grid-cols-2 lg:grid-cols-4 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md shadow-[0_20px_60px_-30px_rgba(0,0,0,0.8)]"
             >
-              {stats.map((stat, i) => (
+              {stats.map((stat) => (
                 <motion.div
                   key={stat.id}
                   variants={fadeUp}
-                  className={`py-4 md:py-[clamp(1rem,2.6vh,1.5rem)] ${i % 2 === 1 ? "ps-6" : ""} ${
-                    i > 0 ? "lg:ps-8 lg:border-s lg:border-white/10" : ""
-                  } ${i % 2 === 1 ? "border-s border-white/10" : ""}`}
+                  className="px-5 md:px-7 py-4 md:py-[clamp(0.9rem,2.4vh,1.4rem)] border-white/10 max-lg:[&:nth-child(even)]:border-s max-lg:[&:nth-child(n+3)]:border-t lg:[&:not(:first-child)]:border-s"
                 >
                   <dt className="sr-only">{stat.label}</dt>
                   <dd className="flex flex-col gap-1.5">
                     {stat.icon ? (
                       <span className="flex items-center gap-2.5">
                         <Icon name={stat.icon} className="size-6 text-gold-soft shrink-0 [stroke-width:1.4]" />
-                        <span className="font-display text-xl md:text-2xl font-semibold">
+                        <span className="font-display text-xl md:text-2xl font-semibold tabular-nums">
                           <CountUp text={stat.value} />
                         </span>
                       </span>
                     ) : (
                       <span className="flex items-baseline gap-2">
-                        <span className="font-display text-3xl md:text-[clamp(2rem,5vh,3rem)] font-semibold text-gold-soft">
+                        <span className="font-display text-3xl md:text-[clamp(2rem,5vh,3rem)] font-semibold text-gold-soft tabular-nums">
                           <CountUp text={stat.value} />
                         </span>
                         {stat.unit && <span className="text-sm font-light text-white/60">{stat.unit}</span>}
@@ -123,6 +124,10 @@ export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) 
               ))}
             </motion.dl>
           )}
+
+          <motion.div variants={fadeUp}>
+            <Accreditations />
+          </motion.div>
         </HeroReveal>
       </ParallaxLayer>
     </section>

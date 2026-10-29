@@ -1,6 +1,9 @@
 import * as motion from "motion/react-client";
+import { Download } from "lucide-react";
 import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
+import { CONTACT } from "@/lib/contact";
+import { hasProfilePdf } from "@/lib/profile";
 import { EASE } from "@/lib/motion";
 import type { SiteData } from "@/lib/data";
 import { Img } from "./Img";
@@ -74,6 +77,19 @@ export function About({ settings, pillars }: Pick<SiteData, "settings" | "pillar
                 <p className="text-base font-light leading-8 text-ink/70">{settings.aboutP2}</p>
               )}
             </Reveal>
+
+            {hasProfilePdf() && (
+              <Reveal delay={200}>
+                <a
+                  href={CONTACT.profilePdf}
+                  download
+                  className="group inline-flex items-center gap-3 rounded-full border border-ink/80 px-7 py-3.5 text-sm font-semibold text-ink transition-colors duration-500 hover:bg-ink hover:text-ivory"
+                >
+                  <Download className="size-4 transition-transform group-hover:translate-y-0.5" />
+                  تحميل سابقة الأعمال - PDF
+                </a>
+              </Reveal>
+            )}
 
             {pillars.length > 0 && (
               <Reveal delay={240}>

@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { CONTACT } from "../lib/contact";
 import bcrypt from "bcryptjs";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "../generated/prisma/client";
@@ -42,7 +43,7 @@ async function main() {
       logoUrl:
         "https://lh3.googleusercontent.com/aida/AEtjO1XLnMNP3UxJ2OBedUm-fnummSn6BPq9bGjB-rfB2qfUZMZcKfUVhZQSxvJqelo0iCRFj-7EdjACq9J1lfOREVoXuwQLYzIpwWTp_nZbXGSVvKCsKRIhQ8IcoBZuKM1HrfgLnqC0C5HU6WN8TE7s1H7YByRvYx9-59euUUOaA51RG4-mWv2KHcezFeh2i9Kb-gBmfzQlX21u39nbr5RlUSCcePr5Ec24pCxjCD-majjKkQ60HcCfB40m_Q",
       topAddress: "المملكة العربية السعودية، الرياض - طريق الملك فهد",
-      phone: "+966 11 000 8899",
+      phone: CONTACT.defaultPhone,
       email: "info@gga-contracting.sa",
       tendersEmail: "tenders@gga-contracting.sa",
       address: "الرياض، طريق الملك فهد، برج الأعمال، الدور 18",
@@ -94,7 +95,7 @@ async function main() {
       consultEyebrow: "ابدأ مشروعك القادم معنا",
       consultTitle: "طلب دراسة مشروع واستشارة تسعير فورية",
       consultText:
-        "يقوم فريقنا الهندسي بدراسة المخططات الأولية وجداول الكميات وتقديم استشارة فنية متكاملة مع تقدير مالي دقيق خلال ٤٨ ساعة عمل.",
+        "يقوم فريقنا الهندسي بدراسة المخططات الأولية وجداول الكميات وتقديم استشارة فنية متكاملة مع تقدير مالي دقيق خلال 48 ساعة عمل.",
       ndaNote:
         "نلتزم بالحفاظ على سرية المخططات والبيانات الهندسية وفق اتفاقية السرية المهنية (NDA).",
 
@@ -120,9 +121,9 @@ async function main() {
     () =>
       prisma.stat.createMany({
         data: [
-          { value: "+٢٥", unit: "عاماً", label: "الخبرة والريادة في قطاع التشييد السعودي", sortOrder: 1 },
-          { value: "+١٨٠", unit: "مشروعاً", label: "صرح معماري ومجمع تجاري وسكني منجز بنجاح", sortOrder: 2 },
-          { value: "٩٩.٤٪", unit: "دقة", label: "الالتزام التام بالجداول الزمنية والمواصفات الفنية", sortOrder: 3 },
+          { value: "+25", unit: "عاماً", label: "الخبرة والريادة في قطاع التشييد السعودي", sortOrder: 1 },
+          { value: "+180", unit: "مشروعاً", label: "صرح معماري ومجمع تجاري وسكني منجز بنجاح", sortOrder: 2 },
+          { value: "99.4%", unit: "دقة", label: "الالتزام التام بالجداول الزمنية والمواصفات الفنية", sortOrder: 3 },
           { value: "تصنيف درجة أولى", icon: "badge-check", label: "معتمد من الهيئة السعودية للمقاولين ومطابق لـ ISO", sortOrder: 4 },
         ],
       }),
@@ -137,7 +138,7 @@ async function main() {
           { icon: "cog", title: "الإتقان الهندسي الصارم", description: "اختبارات معملية دقيقة للمواد وفحص متكامل للأحمال الإنشائية.", sortOrder: 1 },
           { icon: "clock", title: "الالتزام الصارم بالمواعيد", description: "إدارة المشاريع عبر أحدث برمجيات الـ BIM ومخططات جانت الزمنية.", sortOrder: 2 },
           { icon: "heart-handshake", title: "الأمان والسلامة (HSE)", description: "سجل أمان ناصع خالٍ من الحوادث بفضل الرقابة الميدانية المستمرة.", sortOrder: 3 },
-          { icon: "shield-check", title: "الشفافية والحوكمة التعاقدية", description: "تقارير دورية مدعمة بالصور والبياس المالي لراحة المستثمرين والعملاء.", sortOrder: 4 },
+          { icon: "shield-check", title: "الشفافية والحوكمة التعاقدية", description: "تقارير دورية مدعمة بالصور والبيان المالي لراحة المستثمرين والعملاء.", sortOrder: 4 },
         ],
       }),
     "ركائز المؤسسة",
@@ -176,15 +177,15 @@ async function main() {
             title: "برج الأفق للأعمال والمقرات الاستثمارية",
             kind: "مشروع تجاري ومكتبي متكامل",
             location: "الرياض، المملكة",
-            badge: "مكتمل ٢٠٢٤",
+            badge: "مكتمل 2024",
             badgePrimary: true,
-            meta: "مساحة البناء: ٤٥,٠٠٠ م²",
+            meta: "مساحة البناء: 45,000 م²",
             imageUrl: `${IMG}AB6AXuAs00oQaLN4a97YrmLOuLuF-8BogfopWFgDJfBg44wjyTMll8W3AsXyy9Od_YeEteHKNIPd40EVW85JwxMQBgA37QAkfast0FjGsCTGj__IW8IyozcJ4bIRR29pYq2BITBNTYLOPUPgj_bjscqqJY3n6eH6lz0b-yVmpup6ooKa0jFeb_ROxHSXMZFosZNGhhXmZo1GDPJZcNQscdrf5USj8ZXzBOl42bHJW9S9ww`,
             description: "تنفيذ كامل للهيكل الخرساني والإنشائي، والواجهات المزدوجة الموفرة للطاقة، إضافة إلى 4 أدوار مواقف سيارات ذكية وأنظمة تحكم ذكية BMS بالكامل.",
             features: [
-              { icon: "building", text: "٣٢ طابقاً" },
+              { icon: "building", text: "32 طابقاً" },
               { icon: "badge-check", text: "شهادة LEED الذهبية" },
-              { icon: "timer", text: "٢٢ شهراً مدة الإنجاز" },
+              { icon: "timer", text: "22 شهراً مدة الإنجاز" },
             ],
             categoryId: await cat("مشاريع تجارية"),
             sortOrder: 1,
@@ -193,9 +194,9 @@ async function main() {
             title: "مجمع ريحانة السكني الفاخر",
             kind: "مجمع سكني راقٍ",
             location: "جدة، حي الشاطئ",
-            badge: "مكتمل ٢٠٢٣",
+            badge: "مكتمل 2023",
             badgePrimary: true,
-            meta: "٣٢ فيلا مستقلة",
+            meta: "32 فيلا مستقلة",
             imageUrl: `${IMG}AB6AXuC2fBvblzOILmhA7Yj1iIgpzYXlEDnjXczd3V4rSG_SgtugTt5-QHt8ZYdpopLaHl1bqV4T191Ph0_p8Iy4oEwh7vTS_8znA1c1JGvh2zoS5ll7ssRu8Jbk_nLxvQ-IeRIC8O-8eFXYeTwSzaTmwIYNLHmZbHE7SUJbw5Ddken7ozRcCxw1q5XjyV6kVahbYF3LsoB8vAOEu9pqzKmmLs6xIttcu4eVplaf9acSAw`,
             description: "تطوير متكامل للبنية التحتية، شبكات الري، والأعمال المدنية والإنشائية، مع أرقى درجات العزل المائي والحراري وتشطيبات الرخام الطبيعي.",
             features: [
@@ -221,7 +222,7 @@ async function main() {
             location: "الرياض، حي النرجس",
             badge: "وجهة تسوق وترفيه",
             imageUrl: `${IMG}AB6AXuBgxS_CW4LhS2I1iF_h3OkyOAUupPISdhdFbsKm0bOYXK1WLj-Jsr_N7T0lGm_aPlHkMPKifZe6ewOXr0IhxuPYGUCH31v44xl_Wq5KT4ZowSZqIzCSFESYA2UymGrTD9QBUfIBqVHA2LFSpxOS_0OQ-NhoTus6xQkxY_zV9i5IrbauZ3OHwbnCEsdsG-1T-RdkT193PRI2s3Fz0PaXQKEIvp3oc4HLwwwVdkyeKA`,
-            description: "تطوير أرض بمساحة ٥٠,٠٠٠ م² تشمل ممرات مشاة مبردة، نوافير تفاعلية، وتشطيبات حجر الرياض الطبيعي مع واجهات بانورامية ذات كفاءة عزل صوتي قصوى.",
+            description: "تطوير أرض بمساحة 50,000 م² تشمل ممرات مشاة مبردة، نوافير تفاعلية، وتشطيبات حجر الرياض الطبيعي مع واجهات بانورامية ذات كفاءة عزل صوتي قصوى.",
             categoryId: await cat("مشاريع تجارية"),
             sortOrder: 4,
           },
@@ -290,7 +291,7 @@ async function main() {
     () =>
       prisma.testimonial.createMany({
         data: [
-          { quote: "إن التعامل مع مؤسسة غسان غازي الميمني شكل نقطة تحول في تنفيذ برجنا المكتبي بالرياض. الانضباط الهندسي المذهل والتسليم قبل الموعد بـ ٤٠ يوماً أثبت كفاءتهم الاستثنائية.", name: "م. عبد العزيز بن فهد التميمي", role: "الرئيس التنفيذي للتطوير - مجموعة التميمي القابضة", rating: 5, sortOrder: 1 },
+          { quote: "إن التعامل مع مؤسسة غسان غازي الميمني شكل نقطة تحول في تنفيذ برجنا المكتبي بالرياض. الانضباط الهندسي المذهل والتسليم قبل الموعد بـ 40 يوماً أثبت كفاءتهم الاستثنائية.", name: "م. عبد العزيز بن فهد التميمي", role: "الرئيس التنفيذي للتطوير - مجموعة التميمي القابضة", rating: 5, sortOrder: 1 },
           { quote: "دقة التشطيبات المعمارية وتنفيذ التكييف المركزي والمصاعد والواجهات في مشروع المجمع السكني كانت استثنائية. خبرة مهندسي الميمني الميدانية تستحق كل الإشادة.", name: "د. طارق السبيعي", role: "رئيس مجلس الإدارة - صندوق ريتاج الاستثماري", rating: 5, sortOrder: 2 },
           { quote: "الشفافية في التعامل والتقارير الميدانية الأسبوعية أراحتنا تماماً كمستثمرين. مؤسسة غسان غازي الميمني عنوان حقيقي للاحترافية والالتزام بالعقود الإنشائية.", name: "أ. منصور المقرن", role: "مدير إدارة الأصول العقارية - الرياض", rating: 5, sortOrder: 3 },
         ],

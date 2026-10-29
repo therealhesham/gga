@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* التثبيت الأفقي للمعرض: شاشات كبيرة مع مؤشر دقيق (ماوس) فقط، وغير ذلك كاروسيل لمس */
+@custom-variant pinned (@media (min-width: 1024px) and (pointer: fine));
+
 @theme inline {
   --font-sans: var(--font-cairo), "Tajawal", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -116,7 +119,7 @@
   html:has([data-snap-page]) {
     scroll-snap-type: y proximity;
   }
-  @media (min-width: 1024px) and (min-height: 640px) {
+  @media (min-width: 1024px) and (min-height: 640px) and (pointer: fine) {
     html:has([data-snap-page]) {
       scroll-snap-type: y mandatory;
     }
@@ -235,4 +238,35 @@
     animation-duration: 0.01s;
     animation-delay: 0.5s;
   }
+}
+
+/* طبقة شبكة هندسية (CAD) تظهر عند المرور على كروت الخدمات والمشاريع */
+.cad-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><path d='M0 24.5H120M0 48.5H120M0 72.5H120M0 96.5H120M24.5 0V120M48.5 0V120M72.5 0V120M96.5 0V120' stroke='%23d8b565' stroke-opacity='.13' fill='none'/><path d='M0 .5H120M.5 0V120' stroke='%23d8b565' stroke-opacity='.38' fill='none'/><circle cx='.5' cy='.5' r='3' stroke='%23d8b565' stroke-opacity='.55' fill='none'/></svg>");
+  -webkit-mask-image: radial-gradient(ellipse at 50% 55%, #000 25%, transparent 88%);
+  mask-image: radial-gradient(ellipse at 50% 55%, #000 25%, transparent 88%);
+}
+
+/* ظهور الشبكة عند المرور (قاعدة صريحة لأن CSS غير المُطبَّق في layer يتغلّب على أدوات Tailwind) */
+.group:hover > .cad-grid,
+.group:focus-visible > .cad-grid {
+  opacity: 1;
+}
+
+/* تدرّج لوني موحّد للصور: دفء خفيف وتباين أعلى قليلًا */
+.photo-grade {
+  filter: saturate(0.92) contrast(1.05) sepia(0.08);
+}
+.photo-tint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(160deg, rgba(201, 150, 60, 0.24), rgba(30, 20, 10, 0.1) 62%, transparent);
+  mix-blend-mode: soft-light;
 }

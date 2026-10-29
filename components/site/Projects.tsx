@@ -2,12 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { motion, useMotionValueEvent, useScroll, useSpring, useTransform } from "motion/react";
+import {
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "motion/react";
 import { ArrowLeft } from "lucide-react";
 import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
-import { toArabicDigits } from "@/lib/digits";
 import { EASE } from "@/lib/motion";
+import { FILTER_EVENT } from "@/lib/service-filter";
 import { Img } from "./Img";
 import { Magnetic } from "./Magnetic";
 import { SectionEyebrow } from "./SectionEyebrow";
@@ -34,24 +41,70 @@ type Props = {
   projects: ProjectItem[];
 };
 
+const PINNED_QUERY = "(min-width: 1024px) and (pointer: fine)";
+
 /**
- * معرض أفقي: القسم يتثبّت في الشاشة والتمرير الرأسي يحرّك الشريط أفقيًا.
- * الارتفاع الكلي = مسافة الشريط الأفقية + ارتفاع الشاشة، ويُقاس عند تغيّر الحجم.
+ * المعرض: على الشاشات الكبيرة بماوس يتثبّت القسم والتمرير الرأسي يحرّك الشريط أفقيًا،
+ * وعلى اللمس والشاشات الصغيرة يتحوّل إلى كاروسيل أفقي طبيعي (snap) بدون اختطاف التمرير.
  */
 export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
   const [active, setActive] = useState<number | "all">("all");
   const visible = active === "all" ? projects : projects.filter((p) => p.categoryId === active);
 
+  const [pinned, setPinned] = useState(false);
   const outerRef = useRef<HTMLElement>(null);
+  const scrollerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [dims, setDims] = useState({ track: 0, view: 0, vh: 0 });
   const [index, setIndex] = useState(0);
 
+  // فلتر قادم من كروت الخدمات
+  useEffect(() => {
+    const onFilter = (e: Event) => {
+      const id = (e as CustomEvent<{ categoryId: number | null }>).detail?.categoryId;
+      setActive(id ?? "all");
+    };
+    window.addEventListener(FILTER_EVENT, onFilter);
+    return () => window.removeEventListener(FILTER_EVENT, onFilter);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia(PINNED_QUERY);
+    const sync = () => setPinned(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
   const { scrollYProgress } = useScroll({ target: outerRef, offset: ["start start", "end end"] });
   const distance = Math.max(0, dims.track - dims.view);
   // في RTL يبدأ الشريط من اليمين ويمتد يسارًا، فالإزاحة الموجبة تكشف الباقي
-  const x = useTransform(scrollYProgress, [0, 1], [0, distance]);
-  const bar = useSpring(scrollYProgress, { stiffness: 140, damping: 30, mass: 0.4 });
+  const pinnedX = useTransform(scrollYProgress, [0, 1], [0, distance]);
+
+  // تقدّم موحّد للمؤشر: من التمرير الرأسي (pinned) أو من تمرير الكاروسيل الأفقي
+  const progress = useMotionValue(0);
+  const bar = useSpring(progress, { stiffness: 140, damping: 30, mass: 0.4 });
+
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    if (pinned) progress.set(v);
+  });
+
+  useEffect(() => {
+    if (pinned) return;
+    const el = scrollerRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const max = el.scrollWidth - el.clientWidth;
+      progress.set(max > 0 ? Math.min(1, Math.abs(el.scrollLeft) / max) : 0);
+    };
+    onScroll();
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [pinned, progress, visible.length]);
+
+  useMotionValueEvent(progress, "change", (v) => {
+    setIndex(Math.min(visible.length - 1, Math.max(0, Math.round(v * Math.max(visible.length - 1, 0)))));
+  });
 
   useEffect(() => {
     const measure = () => {
@@ -69,9 +122,11 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
     };
   }, [visible.length]);
 
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setIndex(Math.min(visible.length - 1, Math.max(0, Math.round(v * Math.max(visible.length - 1, 0)))));
-  });
+  // عند تغيير التصنيف نعود لأول الشريط
+  useEffect(() => {
+    if (scrollerRef.current) scrollerRef.current.scrollLeft = 0;
+    progress.set(pinned ? scrollYProgress.get() : 0);
+  }, [active, pinned, progress, scrollYProgress]);
 
   const tab = (isActive: boolean) =>
     `relative whitespace-nowrap pb-2 text-sm transition-colors ${
@@ -90,18 +145,21 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
     <section
       id={SECTION_IDS.projects}
       ref={outerRef}
-      className="snap-section relative w-full bg-ivory"
-      style={{ height: dims.vh ? distance + dims.vh : "320svh" }}
+      className="snap-section relative w-full bg-ivory py-20 pinned:py-0 pinned:h-[320svh]"
+      style={pinned && dims.vh ? { height: distance + dims.vh } : undefined}
     >
-      <div className="sticky top-0 h-svh overflow-hidden flex flex-col justify-center pt-20">
-        <div className="overflow-hidden">
+      <div className="pinned:sticky pinned:top-0 pinned:h-svh pinned:overflow-hidden pinned:flex pinned:flex-col pinned:justify-center pinned:pt-20">
+        <div
+          ref={scrollerRef}
+          className="overflow-x-auto overscroll-x-contain snap-x snap-mandatory scroll-px-margin-mobile pinned:overflow-hidden pinned:snap-none"
+        >
           <motion.div
             ref={trackRef}
-            style={{ x }}
-            className="flex w-max items-stretch gap-5 md:gap-8 px-margin-mobile md:px-margin"
+            style={{ x: pinned ? pinnedX : 0 }}
+            className="flex w-max items-stretch gap-4 md:gap-8 px-margin-mobile md:px-margin"
           >
             {/* لوحة العنوان والفلتر */}
-            <div className="shrink-0 w-[82vw] sm:w-[420px] flex flex-col justify-center pe-2 md:pe-8">
+            <div className="snap-start shrink-0 w-[82vw] sm:w-[420px] flex flex-col justify-center pe-2 md:pe-8">
               <SectionEyebrow>{eyebrow}</SectionEyebrow>
               <h2 className="font-display font-medium text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.4] text-ink">
                 {title}
@@ -129,7 +187,7 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
 
               <p className="mt-8 text-sm font-light text-ink/50 inline-flex items-center gap-2">
                 <ArrowLeft className="size-4 text-gold" />
-                واصل التمرير لاستعراض المشاريع
+                {pinned ? "واصل التمرير لاستعراض المشاريع" : "اسحب لاستعراض المشاريع"}
               </p>
             </div>
 
@@ -145,7 +203,7 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: i * 0.06, ease: EASE }}
-                className="shrink-0"
+                className="snap-start shrink-0"
               >
                 <Link
                   href={`/projects/${p.id}`}
@@ -159,10 +217,11 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
                     className="object-cover transition-transform duration-[1600ms] ease-out group-hover:scale-[1.07]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-ink/10" />
+                  <span aria-hidden="true" className="cad-grid group-hover:opacity-100" />
 
-                  <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5 md:p-6">
-                    <span className="font-display text-3xl text-white/40 leading-none">
-                      {toArabicDigits(String(i + 1).padStart(2, "0"))}
+                  <div className="absolute inset-x-0 top-0 z-10 flex items-start justify-between p-5 md:p-6">
+                    <span className="font-display text-3xl text-white/40 leading-none tabular-nums">
+                      {String(i + 1).padStart(2, "0")}
                     </span>
                     <div className="flex items-center gap-2">
                       {p.location && (
@@ -182,7 +241,7 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
                     </div>
                   </div>
 
-                  <div className="absolute inset-x-0 bottom-0 p-5 md:p-7 text-white">
+                  <div className="absolute inset-x-0 bottom-0 z-10 p-5 md:p-7 text-white">
                     <div className="flex items-center justify-between gap-3 text-sm mb-2">
                       <span className="font-medium text-gold-soft">{p.kind}</span>
                       {p.meta && <span className="font-light text-white/60">{p.meta}</span>}
@@ -210,7 +269,7 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
 
             {/* لوحة الختام */}
             {cta && (
-              <div className="shrink-0 w-[70vw] sm:w-[340px] flex flex-col items-start justify-center ps-2 md:ps-8 pe-margin-mobile md:pe-margin">
+              <div className="snap-start shrink-0 w-[70vw] sm:w-[340px] flex flex-col items-start justify-center ps-2 md:ps-8 pe-margin-mobile md:pe-margin">
                 <Magnetic>
                   <a
                     href={`#${SECTION_IDS.contact}`}
@@ -225,12 +284,12 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
           </motion.div>
         </div>
 
-        {/* مؤشر التقدم */}
+        {/* مؤشر التقدم (للمعرض المثبّت وللكاروسيل) */}
         {visible.length > 0 && (
-          <div className="absolute bottom-6 inset-x-margin-mobile md:inset-x-margin flex items-center gap-5">
+          <div className="mt-6 px-margin-mobile md:px-margin flex items-center gap-5 pinned:absolute pinned:bottom-6 pinned:inset-x-0 pinned:mt-0">
             <span className="font-display text-sm text-ink/60 tabular-nums">
-              {toArabicDigits(String(index + 1).padStart(2, "0"))}
-              <span className="text-ink/30"> / {toArabicDigits(String(visible.length).padStart(2, "0"))}</span>
+              {String(index + 1).padStart(2, "0")}
+              <span className="text-ink/30"> / {String(visible.length).padStart(2, "0")}</span>
             </span>
             <div className="relative h-px flex-1 bg-ink/15">
               <motion.div

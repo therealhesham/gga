@@ -56,7 +56,7 @@ async function ProjectContent({ params }: { params: Params }) {
 
   return (
     <>
-      <Chrome phone={settings.phone} />
+      <Chrome />
       <Header settings={settings} home={false} />
 
       <main className="bg-ivory text-ink">
@@ -159,7 +159,7 @@ async function ProjectContent({ params }: { params: Params }) {
               هل لديك مشروع بهذا المستوى؟
             </h2>
             <p className="mt-4 text-base font-light leading-8 text-white/60">
-              فريقنا الهندسي جاهز لدراسة مخططاتك وتقديم تسعير تفصيلي خلال ٤٨ ساعة عمل.
+              فريقنا الهندسي جاهز لدراسة مخططاتك وتقديم تسعير تفصيلي خلال 48 ساعة عمل.
             </p>
             <div className="mt-9">
               <Magnetic>

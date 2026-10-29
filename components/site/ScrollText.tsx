@@ -15,7 +15,7 @@ function Word({
   const opacity = useTransform(progress, range, [0.16, 1]);
   return (
     <>
-      <motion.span style={{ opacity }}>{children}</motion.span>{" "}
+      <motion.span style={{ opacity, display: "inline" }}>{children}</motion.span>{" "}
     </>
   );
 }

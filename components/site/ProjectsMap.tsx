@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft } from "lucide-react";
-import { toArabicDigits } from "@/lib/digits";
 import { KSA_CITIES, KSA_PATH, KSA_VIEWBOX, matchCity } from "@/lib/ksa";
 import { EASE } from "@/lib/motion";
 import { CountUp } from "./CountUp";
@@ -56,11 +55,11 @@ export function ProjectsMap({ projects }: { projects: MapProject[] }) {
               </h2>
               <p className="mt-5 text-base font-light leading-8 text-white/60 max-w-md">
                 <span className="font-display text-gold-soft text-xl">
-                  <CountUp text={toArabicDigits(projects.length)} />
+                  <CountUp text={String(projects.length)} />
                 </span>{" "}
                 مشروعاً في{" "}
                 <span className="font-display text-gold-soft text-xl">
-                  <CountUp text={toArabicDigits(groups.length)} />
+                  <CountUp text={String(groups.length)} />
                 </span>{" "}
                 {groups.length === 1 ? "مدينة" : groups.length === 2 ? "مدينتين" : groups.length <= 10 ? "مدن" : "مدينة"}. اختر مدينة لاستعراض مشاريعها.
               </p>
@@ -84,7 +83,7 @@ export function ProjectsMap({ projects }: { projects: MapProject[] }) {
                     >
                       {g.city}
                       <span className={`ms-2 text-xs ${on ? "text-ink/60" : "text-white/40"}`}>
-                        {toArabicDigits(g.items.length)}
+                        {g.items.length}
                       </span>
                     </button>
                   );
@@ -198,7 +197,7 @@ export function ProjectsMap({ projects }: { projects: MapProject[] }) {
                         fill="#0f0f11"
                         style={{ pointerEvents: "none" }}
                       >
-                        {toArabicDigits(g.items.length)}
+                        {g.items.length}
                       </text>
                     )}
                     {on && (

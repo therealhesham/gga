@@ -52,11 +52,11 @@ export function CountUp({ text, duration = 2.2 }: { text: string; duration?: num
   }, [inView, ready, parsed]);
 
   if (!parsed) return <span>{text}</span>;
-  if (val === null) return <span ref={ref}>{text}</span>;
+  if (val === null) return <span ref={ref} className="tabular-nums">{text}</span>;
 
   const fixed = val.toFixed(parsed.decimals);
   return (
-    <span ref={ref}>
+    <span ref={ref} className="tabular-nums">
       {parsed.prefix}
       {parsed.arabic ? toArabic(fixed) : fixed}
       {parsed.suffix}

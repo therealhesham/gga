@@ -1,5 +1,5 @@
 // بيانات خريطة المملكة (حدود Natural Earth 50m، ملكية عامة) محوّلة إلى مسار SVG
-// الإسقاط: equirectangular بعد تصحيح خط العرض ٢٤°
+// الإسقاط: equirectangular بعد تصحيح خط العرض 24°
 export const KSA_VIEWBOX = { width: 1000, height: 820 };
 
 export const KSA_PATH =

@@ -5,7 +5,10 @@ const nextConfig: NextConfig = {
   output: "standalone",
   experimental: {
     agentFeedback: true,
+    // مرفقات طلبات التسعير: حتى 3 ملفات × 10MB
+    serverActions: { bodySizeLimit: "32mb" },
   },
+  images: { formats: ["image/avif", "image/webp"] },
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
