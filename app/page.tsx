@@ -10,6 +10,7 @@ import { Quality } from "@/components/site/Quality";
 import { Trust } from "@/components/site/Trust";
 import { Consultation } from "@/components/site/Consultation";
 import { Footer } from "@/components/site/Footer";
+import { SectionDots } from "@/components/site/SectionDots";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { settings } = await getSiteData();
@@ -26,8 +27,9 @@ export default async function Home() {
   return (
     <>
       <Header settings={settings} />
-      <main className="w-full pt-28 bg-surface">
-        <div className="flex flex-col w-full text-on-surface">
+      <SectionDots />
+      <main className="w-full bg-ivory">
+        <div className="flex flex-col w-full text-ink">
           <Hero settings={settings} stats={data.stats} />
           <About settings={settings} pillars={data.pillars} />
           <Services settings={settings} services={data.services} />

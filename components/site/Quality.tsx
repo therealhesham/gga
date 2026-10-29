@@ -1,6 +1,8 @@
 import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
 import type { SiteData } from "@/lib/data";
+import { MetricBar } from "./MetricBar";
+import { Reveal } from "./Reveal";
 import { SectionEyebrow } from "./SectionEyebrow";
 
 type Props = Pick<SiteData, "settings" | "qualityItems" | "metrics" | "certifications">;
@@ -9,73 +11,73 @@ export function Quality({ settings, qualityItems, metrics, certifications }: Pro
   return (
     <section
       id={SECTION_IDS.quality}
-      className="w-full py-24 bg-surface-container-low border-y border-outline-variant/60 relative overflow-hidden"
+      className="snap-section relative w-full min-h-svh flex items-center bg-ink-soft text-white py-24 md:py-28 overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-6 space-y-6">
-            <SectionEyebrow className="">{settings.qualityEyebrow}</SectionEyebrow>
-            <h2 className="text-headline-lg md:text-[40px] md:leading-tight text-on-surface font-extrabold tracking-tight">
-              {settings.qualityTitle}
-            </h2>
-            <p className="text-body-md text-on-surface-variant leading-relaxed text-justify">
-              {settings.qualityText}
-            </p>
+      {/* وهج ذهبي هادئ في الخلفية */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-40 top-1/3 size-[36rem] rounded-full bg-gold/10 blur-[140px]"
+      />
+      <div className="relative max-w-7xl mx-auto w-full px-margin-mobile md:px-margin">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-24 items-start">
+          <div className="lg:col-span-6">
+            <Reveal>
+              <SectionEyebrow dark>{settings.qualityEyebrow}</SectionEyebrow>
+              <h2 className="font-display font-medium text-[clamp(2rem,3.8vw,3.2rem)] leading-[1.4] mb-6">
+                {settings.qualityTitle}
+              </h2>
+              <p className="text-base font-light leading-8 text-white/65 max-w-xl">
+                {settings.qualityText}
+              </p>
+            </Reveal>
 
-            <div className="space-y-4 pt-4">
-              {qualityItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-start gap-4 p-5 bg-surface-container-lowest border border-outline-variant/70 shadow-sm"
-                >
-                  <Icon name={item.icon} className="size-6 text-primary mt-1 shrink-0" />
-                  <div>
-                    <h4 className="text-title-lg font-bold text-on-surface">{item.title}</h4>
-                    <p className="text-body-sm text-on-surface-variant mt-1">{item.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <Reveal delay={140}>
+              <ul className="mt-8 divide-y divide-white/10 border-y border-white/10">
+                {qualityItems.map((item) => (
+                  <li key={item.id} className="flex items-start gap-5 py-5">
+                    <Icon name={item.icon} className="size-7 text-gold-soft mt-0.5 shrink-0 [stroke-width:1.3]" />
+                    <div>
+                      <h3 className="font-display text-lg font-semibold">{item.title}</h3>
+                      <p className="mt-1.5 text-sm font-light leading-7 text-white/55">{item.description}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
           </div>
 
-          <div className="lg:col-span-6 bg-surface-container-lowest p-8 md:p-12 shadow-xl border border-outline-variant relative">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 pointer-events-none" />
-            <div className="mb-8">
-              <span className="text-label-sm text-primary font-bold tracking-widest uppercase block mb-1">
-                {settings.metricsEyebrow}
-              </span>
-              <h3 className="text-headline-sm font-bold text-on-surface">{settings.metricsTitle}</h3>
+          <Reveal delay={200} className="lg:col-span-6 lg:ps-4">
+            <div className="mb-9">
+              <span className="block text-sm font-medium text-gold-soft mb-2">{settings.metricsEyebrow}</span>
+              <h3 className="font-display text-2xl md:text-3xl font-semibold">{settings.metricsTitle}</h3>
             </div>
 
-            <div className="space-y-6">
-              {metrics.map((m, i) => (
+            <div className="space-y-8">
+              {metrics.map((m) => (
                 <div key={m.id}>
-                  <div className="flex justify-between gap-4 text-label-md mb-2">
-                    <span className="text-on-surface font-bold">{m.label}</span>
-                    <span className="text-primary font-mono font-bold shrink-0">{m.valueText}</span>
+                  <div className="flex items-end justify-between gap-4 mb-3.5">
+                    <span className="text-base font-light text-white/80">{m.label}</span>
+                    <span className="font-display text-2xl md:text-3xl font-semibold text-gold-soft shrink-0">
+                      {m.valueText}
+                    </span>
                   </div>
-                  <div className="w-full h-2.5 bg-surface-container">
-                    <div
-                      className={`h-2.5 ${i % 2 === 1 ? "bg-primary-container" : "bg-primary"}`}
-                      style={{ width: `${Math.min(100, Math.max(0, m.percent))}%` }}
-                    />
-                  </div>
+                  <MetricBar percent={m.percent} />
                 </div>
               ))}
             </div>
 
             {certifications.length > 0 && (
-              <div className="grid grid-cols-3 gap-4 mt-10 bg-surface-container-low border border-outline-variant/60 p-4 text-center">
+              <div className="grid grid-cols-3 mt-12 border-t border-white/12 [&>*:not(:first-child)]:border-s [&>*]:border-white/10">
                 {certifications.map((c) => (
-                  <div key={c.id} className="flex flex-col items-center">
-                    <Icon name={c.icon} className="size-8 text-primary mb-1" />
-                    <span className="font-mono text-xs font-bold text-on-surface">{c.code}</span>
-                    <span className="text-[11px] text-on-surface-variant font-medium">{c.label}</span>
+                  <div key={c.id} className="flex flex-col items-center text-center pt-7 px-2">
+                    <Icon name={c.icon} className="size-8 text-gold-soft mb-3 [stroke-width:1.2]" />
+                    <span className="font-display text-base font-semibold">{c.code}</span>
+                    <span className="text-xs font-light text-white/50 mt-1">{c.label}</span>
                   </div>
                 ))}
               </div>
             )}
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

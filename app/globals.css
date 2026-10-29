@@ -3,9 +3,18 @@
 @theme inline {
   --font-sans: var(--font-cairo), "Tajawal", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-kufi), var(--font-cairo), sans-serif;
 }
 
 @theme {
+  /* هوية الموقع العام: فحمي + عاجي + ذهبي الشعار */
+  --color-ink: #0f0f11;
+  --color-ink-soft: #17171a;
+  --color-ivory: #f7f4ee;
+  --color-ivory-deep: #efeae0;
+  --color-gold: #a9822f;
+  --color-gold-soft: #d8b565;
+
   /* ألوان التصميم */
   --color-surface: #faf8f5;
   --color-background: #faf8f5;
@@ -101,7 +110,19 @@
 
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 7rem;
+    scroll-snap-type: y proximity;
+  }
+
+  /* على الشاشات الكبيرة: تثبيت كامل عند كل قسم */
+  @media (min-width: 1024px) and (min-height: 640px) {
+    html {
+      scroll-snap-type: y mandatory;
+    }
+  }
+
+  ::selection {
+    background: var(--color-gold-soft);
+    color: var(--color-ink);
   }
 }
 
@@ -127,5 +148,84 @@
   .cs-bar {
     animation: none;
     right: 0;
+  }
+}
+
+
+/* ===== الموقع العام ===== */
+.snap-section {
+  scroll-snap-align: start;
+}
+
+/* ظهور تدريجي عند الوصول للقسم (انظر Reveal.tsx) */
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(28px);
+}
+.reveal-shown {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 1s cubic-bezier(0.22, 0.7, 0.2, 1),
+    transform 1s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.fade-up {
+  animation: fade-up 1.1s cubic-bezier(0.22, 0.7, 0.2, 1) both;
+}
+
+/* حركة بطيئة للفيديو خلف الهيرو */
+@keyframes hero-zoom {
+  from {
+    transform: scale(1.03);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+.hero-zoom {
+  animation: hero-zoom 26s ease-in-out infinite alternate;
+}
+
+/* مؤشر التمرير */
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+.scroll-cue::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-gold-soft);
+  animation: scroll-cue 2.2s cubic-bezier(0.6, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal-hidden {
+    opacity: 1;
+    transform: none;
+  }
+  .fade-up,
+  .hero-zoom,
+  .scroll-cue::after {
+    animation: none;
   }
 }

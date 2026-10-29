@@ -2,60 +2,58 @@ import { ArrowLeft } from "lucide-react";
 import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
 import type { SiteData } from "@/lib/data";
+import { Reveal } from "./Reveal";
 import { SectionEyebrow } from "./SectionEyebrow";
 
 export function Services({ settings, services }: Pick<SiteData, "settings" | "services">) {
   return (
     <section
       id={SECTION_IDS.services}
-      className="w-full py-24 bg-surface-container-low border-y border-outline-variant/60 relative"
+      className="snap-section relative w-full min-h-svh flex items-center bg-ink text-white py-24 md:py-28"
     >
-      <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+      <div className="max-w-7xl mx-auto w-full px-margin-mobile md:px-margin">
+        <Reveal className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 md:mb-16">
           <div>
-            <SectionEyebrow>{settings.servicesEyebrow}</SectionEyebrow>
-            <h2 className="text-headline-lg md:text-[44px] text-on-surface font-extrabold tracking-tight">
+            <SectionEyebrow dark>{settings.servicesEyebrow}</SectionEyebrow>
+            <h2 className="font-display font-medium text-[clamp(2rem,4vw,3.4rem)] leading-[1.4]">
               {settings.servicesTitle}
             </h2>
           </div>
-          <p className="text-body-md text-on-surface-variant max-w-md font-medium">
-            {settings.servicesIntro}
-          </p>
-        </div>
+          <p className="text-base font-light leading-8 text-white/60 max-w-md">{settings.servicesIntro}</p>
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((s) => (
-            <div
-              key={s.id}
-              className="group bg-surface-container-lowest hover:bg-white transition-all duration-300 p-8 flex flex-col justify-between shadow-sm hover:shadow-xl relative overflow-hidden border border-outline-variant"
-            >
-              <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-l from-primary via-primary-container to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div>
-                <div className="size-14 bg-surface-container-low border border-outline-variant flex items-center justify-center mb-8 text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                  <Icon name={s.icon} className="size-7" />
-                </div>
-                {s.code && (
-                  <div dir="ltr" className="font-mono text-xs text-primary font-semibold mb-2 text-right">
-                    {s.code}
-                  </div>
-                )}
-                <h3 className="text-title-lg font-bold text-on-surface group-hover:text-primary transition-colors mb-4">
-                  {s.title}
-                </h3>
-                <p className="text-body-sm text-on-surface-variant leading-relaxed mb-6">
-                  {s.description}
-                </p>
-              </div>
+        <Reveal delay={120}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t border-white/12 divide-y md:divide-y-0 divide-white/10">
+            {services.map((s, i) => (
               <a
+                key={s.id}
                 href={`#${SECTION_IDS.projects}`}
-                className="pt-4 flex items-center justify-between text-label-md text-primary font-bold border-t border-outline-variant/40"
+                className={`group relative flex flex-col justify-between gap-10 p-7 md:p-9 min-h-[15rem] md:min-h-[20rem] transition-colors duration-500 hover:bg-white/[0.04] md:border-b md:border-white/10 ${
+                  i % 2 === 0 ? "md:border-e" : ""
+                } lg:border-e lg:last:border-e-0`}
               >
-                <span>استعراض النماذج</span>
-                <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-2" />
+                <span
+                  aria-hidden="true"
+                  className="absolute bottom-0 right-0 h-px w-0 bg-gold-soft transition-all duration-700 group-hover:w-full"
+                />
+                <div className="flex items-start justify-between">
+                  <Icon name={s.icon} className="size-9 text-gold-soft [stroke-width:1.2]" />
+                  <span className="font-display text-5xl leading-none text-white/10 transition-colors duration-500 group-hover:text-gold-soft/40">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <div>
+                  <h3 className="font-display text-xl font-semibold mb-3">{s.title}</h3>
+                  <p className="text-sm font-light leading-7 text-white/55 mb-6">{s.description}</p>
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-gold-soft">
+                    استعراض النماذج
+                    <ArrowLeft className="size-4 transition-transform duration-500 group-hover:-translate-x-1.5" />
+                  </span>
+                </div>
               </a>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Reveal>
       </div>
     </section>
   );

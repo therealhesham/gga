@@ -8,15 +8,15 @@ import { BUDGET_OPTIONS, PROJECT_TYPES } from "@/lib/constants";
 const initial: InquiryState = { status: "idle" };
 
 const field =
-  "w-full bg-surface-container-lowest border border-outline-variant px-4 py-3 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-body-md transition-colors";
-const label = "block text-label-md text-on-surface font-bold";
+  "w-full bg-transparent border-0 border-b border-ink/20 rounded-none px-0 py-3 text-ink placeholder:text-ink/30 font-light focus:outline-none focus:border-gold text-base transition-colors";
+const label = "block text-sm font-medium text-ink/60";
 
 export function ConsultationForm() {
   const [state, action, pending] = useActionState(submitInquiry, initial);
   const v = state.values ?? {};
 
   return (
-    <form action={action} className="space-y-6">
+    <form action={action} className="space-y-8">
       {/* مصيدة للبوتات - مخفية عن المستخدمين */}
       <input
         type="text"
@@ -27,7 +27,7 @@ export function ConsultationForm() {
         className="hidden"
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
         <div className="space-y-2">
           <label htmlFor="rfq-name" className={label}>
             الاسم الكامل / اسم الجهة *
@@ -59,7 +59,7 @@ export function ConsultationForm() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
         <div className="space-y-2">
           <label htmlFor="rfq-type" className={label}>
             نوع المشروع *
@@ -94,11 +94,11 @@ export function ConsultationForm() {
 
       <fieldset className="space-y-2">
         <legend className={label}>الميزانية التقديرية المتوقعة للمشروع</legend>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs mt-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center text-xs mt-3">
           {BUDGET_OPTIONS.map((b) => (
             <label
               key={b.value}
-              className="cursor-pointer bg-surface-container-lowest border border-outline-variant hover:border-primary has-checked:border-primary has-checked:bg-primary/5 has-checked:ring-1 has-checked:ring-primary p-3 flex flex-col items-center transition-colors"
+              className="cursor-pointer border border-ink/15 hover:border-gold has-checked:border-gold has-checked:bg-gold/10 py-3.5 px-2 flex flex-col items-center transition-colors"
             >
               <input
                 type="radio"
@@ -107,8 +107,8 @@ export function ConsultationForm() {
                 defaultChecked={v.budget === b.value}
                 className="sr-only"
               />
-              <span className="text-on-surface font-bold">{b.value}</span>
-              <span className="text-outline text-[11px]">{b.hint}</span>
+              <span className="text-ink font-semibold">{b.value}</span>
+              <span className="text-ink/45 text-[11px] font-light">{b.hint}</span>
             </label>
           ))}
         </div>
@@ -131,7 +131,7 @@ export function ConsultationForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full py-4 bg-primary text-on-primary text-label-md font-bold tracking-wider hover:bg-primary-container transition-all duration-300 shadow-md flex items-center justify-center gap-3 border border-primary/30 disabled:opacity-70 disabled:cursor-not-allowed"
+        className="w-full py-4 bg-ink text-ivory text-sm font-semibold hover:bg-gold hover:text-white transition-colors duration-500 flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed"
       >
         <span>{pending ? "جارٍ الإرسال..." : "إرسال الطلب للاستشاري الهندسي"}</span>
         {pending ? (
@@ -143,7 +143,7 @@ export function ConsultationForm() {
 
       <div aria-live="polite">
         {state.status === "success" && (
-          <div className="flex items-center justify-center gap-2 p-4 bg-surface-container-lowest border border-primary text-primary text-center font-bold text-sm shadow-inner">
+          <div className="flex items-center justify-center gap-2 p-4 border border-gold text-gold text-center font-semibold text-sm">
             <CircleCheck className="size-5 shrink-0" />
             تم استلام طلبكم بنجاح. سيتواصل معكم أحد مهندسينا التنفيذيين خلال ٢٤ ساعة.
           </div>

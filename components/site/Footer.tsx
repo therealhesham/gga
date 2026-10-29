@@ -1,117 +1,109 @@
-import { Award, Building2, ChevronLeft, Clock, Mail, MapPin, PhoneCall } from "lucide-react";
+import { ArrowUpRight, Clock, Mail, MapPin, PhoneCall } from "lucide-react";
 import { SECTION_IDS } from "@/lib/constants";
 import type { SiteData } from "@/lib/data";
 
 const QUICK_LINKS = [
-  { label: "الرئيسية والمنجزات", href: `#${SECTION_IDS.hero}` },
-  { label: "نبذة عن المؤسسة وتاريخنا", href: `#${SECTION_IDS.about}` },
-  { label: "محفظة المشاريع الكبرى", href: `#${SECTION_IDS.projects}` },
-  { label: "معايير الأمان والسلامة", href: `#${SECTION_IDS.quality}` },
+  { label: "الرئيسية", href: `#${SECTION_IDS.hero}` },
+  { label: "عن المؤسسة", href: `#${SECTION_IDS.about}` },
+  { label: "محفظة المشاريع", href: `#${SECTION_IDS.projects}` },
+  { label: "معايير الجودة والسلامة", href: `#${SECTION_IDS.quality}` },
   { label: "طلب استشارة وتسعير", href: `#${SECTION_IDS.contact}` },
 ];
 
-function LinkItem({ label, href }: { label: string; href: string }) {
-  return (
-    <li className="flex items-center gap-2">
-      <ChevronLeft className="size-3 text-primary" />
-      <a className="text-on-surface-variant hover:text-primary transition-colors" href={href}>
-        {label}
-      </a>
-    </li>
-  );
-}
+const linkClass = "text-sm font-light text-white/60 hover:text-gold-soft transition-colors";
 
 export function Footer({ settings, services }: Pick<SiteData, "settings" | "services">) {
   return (
-    <footer className="w-full bg-surface-container-high border-t border-outline-variant text-on-surface">
-      <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin pt-14 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-12">
-          <div className="space-y-space-md">
-            <div className="flex items-center gap-3">
-              <div className="size-10 bg-surface-container-lowest border border-outline-variant flex items-center justify-center">
-                <Building2 className="size-6 text-primary" />
-              </div>
-              <div>
-                <span className="text-title-lg font-bold text-on-surface block leading-snug">
-                  {settings.companyName}
-                </span>
-                <span className="text-[11px] text-primary block uppercase font-bold tracking-wider">
+    <footer className="snap-section w-full bg-ink text-white">
+      <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin pt-20 pb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-12 gap-y-12 pb-14">
+          <div className="lg:col-span-4 space-y-6">
+            <div className="flex items-center gap-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                alt=""
+                src="/logo-mark-light.png"
+                width={600}
+                height={357}
+                className="h-12 w-auto"
+              />
+              <span aria-hidden="true" className="h-9 w-px bg-white/20" />
+              <div className="leading-tight">
+                <span className="block font-display text-lg font-semibold">{settings.companyName}</span>
+                <span className="block text-[11px] font-light text-gold-soft mt-0.5">
                   {settings.companyTagline}
                 </span>
               </div>
             </div>
-            <p className="text-body-sm text-on-surface-variant leading-relaxed">
-              {settings.footerAbout}
-            </p>
+            <p className="text-sm font-light leading-8 text-white/55 max-w-sm">{settings.footerAbout}</p>
             {settings.footerBadge && (
-              <div className="flex items-center gap-3 pt-space-xs">
-                <div className="p-2 bg-surface-container-lowest border border-outline-variant">
-                  <Award className="size-4 text-primary" />
-                </div>
-                <span className="text-label-sm text-secondary font-semibold">
-                  {settings.footerBadge}
-                </span>
-              </div>
+              <p className="text-sm font-medium text-gold-soft">{settings.footerBadge}</p>
             )}
           </div>
 
-          <div className="space-y-space-sm">
-            <h4 className="text-title-lg font-bold text-on-surface tracking-wide mb-space-md">
-              روابط رئيسية
-            </h4>
-            <ul className="space-y-2.5 text-body-sm">
+          <div className="lg:col-span-2">
+            <h4 className="font-display text-base font-semibold mb-5">روابط رئيسية</h4>
+            <ul className="space-y-3">
               {QUICK_LINKS.map((l) => (
-                <LinkItem key={l.href} {...l} />
+                <li key={l.href}>
+                  <a className={linkClass} href={l.href}>
+                    {l.label}
+                  </a>
+                </li>
               ))}
             </ul>
           </div>
 
-          <div className="space-y-space-sm">
-            <h4 className="text-title-lg font-bold text-on-surface tracking-wide mb-space-md">
-              الخدمات التخصصية
-            </h4>
-            <ul className="space-y-2.5 text-body-sm">
+          <div className="lg:col-span-3">
+            <h4 className="font-display text-base font-semibold mb-5">الخدمات التخصصية</h4>
+            <ul className="space-y-3">
               {services.map((s) => (
-                <LinkItem key={s.id} label={s.title} href={`#${SECTION_IDS.services}`} />
+                <li key={s.id}>
+                  <a className={linkClass} href={`#${SECTION_IDS.services}`}>
+                    {s.title}
+                  </a>
+                </li>
               ))}
             </ul>
           </div>
 
-          <div className="space-y-space-sm">
-            <h4 className="text-title-lg font-bold text-on-surface tracking-wide mb-space-md">
-              المقر الرئيسي والتواصل
-            </h4>
-            <div className="space-y-3 text-body-sm text-on-surface-variant">
-              <div className="flex items-start gap-2.5">
-                <MapPin className="size-[18px] text-primary mt-0.5 shrink-0" />
+          <div className="lg:col-span-3">
+            <h4 className="font-display text-base font-semibold mb-5">المقر الرئيسي والتواصل</h4>
+            <ul className="space-y-4 text-sm font-light text-white/60">
+              <li className="flex items-start gap-3">
+                <MapPin className="size-[18px] text-gold-soft mt-0.5 shrink-0 [stroke-width:1.5]" />
                 <span>{settings.address}</span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <Mail className="size-[18px] text-primary shrink-0" />
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail className="size-[18px] text-gold-soft shrink-0 [stroke-width:1.5]" />
                 <span>{settings.email}</span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <PhoneCall className="size-[18px] text-primary shrink-0" />
+              </li>
+              <li className="flex items-center gap-3">
+                <PhoneCall className="size-[18px] text-gold-soft shrink-0 [stroke-width:1.5]" />
                 <span dir="ltr">{settings.phone}</span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <Clock className="size-[18px] text-primary shrink-0" />
+              </li>
+              <li className="flex items-center gap-3">
+                <Clock className="size-[18px] text-gold-soft shrink-0 [stroke-width:1.5]" />
                 <span>{settings.workingHours}</span>
-              </div>
-            </div>
+              </li>
+            </ul>
             {settings.footerIso && (
-              <div className="pt-space-xs">
-                <div className="p-space-sm bg-surface-container-lowest border border-outline-variant text-xs text-on-surface-variant flex items-center justify-between">
-                  <span>الاعتماد والامتثال:</span>
-                  <span className="text-primary font-bold">{settings.footerIso}</span>
-                </div>
-              </div>
+              <p className="mt-6 text-sm font-light text-white/50">
+                الاعتماد والامتثال: <span className="font-medium text-gold-soft">{settings.footerIso}</span>
+              </p>
             )}
           </div>
         </div>
 
-        <div className="pt-6 border-t border-outline-variant/60 text-xs text-on-surface-variant">
-          {settings.footerCopyright}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-7 border-t border-white/10 text-xs font-light text-white/45">
+          <span>{settings.footerCopyright}</span>
+          <a
+            href={`#${SECTION_IDS.hero}`}
+            className="inline-flex items-center gap-1.5 hover:text-gold-soft transition-colors"
+          >
+            العودة للأعلى
+            <ArrowUpRight className="size-3.5" />
+          </a>
         </div>
       </div>
     </footer>
