@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
+import { EASE } from "@/lib/motion";
 
 type Props = {
   children: React.ReactNode;
@@ -9,49 +10,17 @@ type Props = {
   delay?: number;
 };
 
-/**
- * يُظهر المحتوى بنعومة عند وصوله للشاشة.
- * العناصر الظاهرة أصلًا لا تُخفى (بدون وميض)، ومع تقليل الحركة يظهر كل شيء فورًا.
- */
+/** يُظهر المحتوى بنعومة عند وصوله للشاشة (مرة واحدة) */
 export function Reveal({ children, className = "", delay = 0 }: Props) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [state, setState] = useState<"idle" | "hidden" | "shown">("idle");
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const rect = el.getBoundingClientRect();
-    if (reduced || (rect.top < window.innerHeight * 0.92 && rect.bottom > 0)) {
-      setState("shown");
-      return;
-    }
-
-    setState("hidden");
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setState("shown");
-          io.disconnect();
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  const stateClass =
-    state === "hidden" ? "reveal-hidden" : state === "shown" ? "reveal-shown" : "";
-
   return (
-    <div
-      ref={ref}
-      className={`${className} ${stateClass}`}
-      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.12, margin: "0px 0px -6% 0px" }}
+      transition={{ duration: 1, delay: delay / 1000, ease: EASE }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }

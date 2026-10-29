@@ -11,6 +11,7 @@ import { Trust } from "@/components/site/Trust";
 import { Consultation } from "@/components/site/Consultation";
 import { Footer } from "@/components/site/Footer";
 import { SectionDots } from "@/components/site/SectionDots";
+import { MotionRoot } from "@/components/site/MotionRoot";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { settings } = await getSiteData();
@@ -25,7 +26,7 @@ export default async function Home() {
   if (settings.comingSoonEnabled) return <ComingSoon settings={settings} />;
 
   return (
-    <>
+    <MotionRoot>
       <Header settings={settings} />
       <SectionDots />
       <main className="w-full bg-ivory">
@@ -55,6 +56,6 @@ export default async function Home() {
         </div>
       </main>
       <Footer settings={settings} services={data.services} />
-    </>
+    </MotionRoot>
   );
 }

@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft } from "lucide-react";
 import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
+import { EASE } from "@/lib/motion";
 import { Img } from "./Img";
 import { Reveal } from "./Reveal";
 import { SectionEyebrow } from "./SectionEyebrow";
@@ -40,11 +42,17 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
     active === "all" ? projects : projects.filter((p) => p.categoryId === active);
 
   const tab = (isActive: boolean) =>
-    `relative whitespace-nowrap pb-2.5 text-sm transition-colors after:absolute after:bottom-0 after:right-0 after:h-px after:bg-gold after:transition-all after:duration-500 ${
-      isActive
-        ? "font-semibold text-ink after:w-full"
-        : "font-normal text-ink/50 hover:text-ink after:w-0 hover:after:w-1/2"
+    `relative whitespace-nowrap pb-2.5 text-sm transition-colors after:absolute after:bottom-0 after:right-0 after:h-px after:bg-gold after:transition-all after:duration-500 after:w-0 ${
+      isActive ? "font-semibold text-ink" : "font-normal text-ink/50 hover:text-ink hover:after:w-1/2"
     }`;
+
+  const underline = (
+    <motion.span
+      layoutId="project-tab"
+      transition={{ type: "spring", stiffness: 420, damping: 34 }}
+      className="absolute bottom-0 inset-x-0 h-px bg-gold"
+    />
+  );
 
   return (
     <section
@@ -64,6 +72,7 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
             <div className="flex items-center md:flex-wrap gap-x-7 gap-y-1 overflow-x-auto md:overflow-visible border-b border-ink/10 -mx-margin-mobile px-margin-mobile md:mx-0 md:px-0 md:max-w-xl">
               <button type="button" className={tab(active === "all")} onClick={() => setActive("all")}>
                 الكل
+                {active === "all" && underline}
               </button>
               {categories.map((c) => (
                 <button
@@ -73,6 +82,7 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
                   onClick={() => setActive(c.id)}
                 >
                   {c.name}
+                  {active === c.id && underline}
                 </button>
               ))}
             </div>
@@ -85,10 +95,20 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
           </p>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-14">
+            <AnimatePresence mode="popLayout">
             {visible.map((p, i) => {
               const large = isLarge(i);
               return (
-                <Reveal key={p.id} delay={(i % 2) * 120} className={SPANS[i % 4]}>
+                <motion.div
+                  key={p.id}
+                  layout="position"
+                  className={SPANS[i % 4]}
+                  initial={{ opacity: 0, y: 36 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  viewport={{ once: true, amount: 0.12 }}
+                  transition={{ duration: 0.9, delay: (i % 2) * 0.12, ease: EASE }}
+                >
                   <article className="group">
                     <div className="relative w-full overflow-hidden h-[280px] sm:h-[340px] lg:h-[420px] bg-ivory-deep">
                       <Img
@@ -143,9 +163,10 @@ export function Projects({ eyebrow, title, cta, categories, projects }: Props) {
                       )}
                     </div>
                   </article>
-                </Reveal>
+                </motion.div>
               );
             })}
+            </AnimatePresence>
           </div>
         )}
 

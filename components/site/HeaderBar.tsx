@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
 import { BadgeCheck, MapPin, Menu, Phone, X } from "lucide-react";
 import { NAV_ITEMS, SECTION_IDS } from "@/lib/constants";
+import { EASE } from "@/lib/motion";
 import { useActiveSection } from "./useActiveSection";
 
 type Props = {
@@ -25,6 +27,9 @@ export function HeaderBar({
   const active = useActiveSection();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  // شريط تقدم القراءة أسفل الهيدر
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.4 });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -37,13 +42,22 @@ export function HeaderBar({
   const solid = scrolled || open;
 
   return (
-    <header
+    <motion.header
+      initial={{ y: -24, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.9, ease: EASE }}
       className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-500 ${
         solid
           ? "bg-ivory/90 backdrop-blur-xl shadow-[0_1px_0_rgba(15,15,17,0.08)] text-ink"
           : "bg-gradient-to-b from-ink/75 via-ink/30 to-transparent text-white"
       }`}
     >
+      <motion.div
+        aria-hidden="true"
+        style={{ scaleX: progress, transformOrigin: "right" }}
+        className="absolute inset-x-0 bottom-0 h-[2px] bg-gold-soft"
+      />
+
       {/* شريط المعلومات: يختفي بنعومة عند التمرير */}
       <div
         className={`overflow-hidden transition-all duration-500 ${
@@ -125,13 +139,20 @@ export function HeaderBar({
                 aria-current={isActive ? "page" : undefined}
                 className={`relative py-2 text-[15px] transition-colors after:absolute after:-bottom-0.5 after:right-0 after:h-px after:bg-gold-soft after:transition-all after:duration-500 ${
                   isActive
-                    ? `font-semibold after:w-full ${solid ? "text-ink after:bg-gold" : "text-white"}`
+                    ? `font-semibold after:w-0 ${solid ? "text-ink" : "text-white"}`
                     : `font-normal after:w-0 hover:after:w-full ${
                         solid ? "text-ink/65 hover:text-ink" : "text-white/70 hover:text-white"
                       }`
                 }`}
               >
                 {item.label}
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-underline"
+                    transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                    className={`absolute -bottom-0.5 inset-x-0 h-px ${solid ? "bg-gold" : "bg-gold-soft"}`}
+                  />
+                )}
               </a>
             );
           })}
@@ -162,9 +183,14 @@ export function HeaderBar({
         </div>
       </div>
 
+      <AnimatePresence>
       {open && (
-        <nav
-          className="lg:hidden border-t border-ink/10 bg-ivory px-margin-mobile pb-6 pt-2 flex flex-col"
+        <motion.nav
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.45, ease: EASE }}
+          className="lg:hidden overflow-hidden border-t border-ink/10 bg-ivory px-margin-mobile flex flex-col"
           aria-label="قائمة الجوال"
         >
           {NAV_ITEMS.map((item) => (
@@ -183,13 +209,14 @@ export function HeaderBar({
             <a
               href={`#${SECTION_IDS.contact}`}
               onClick={() => setOpen(false)}
-              className="mt-5 text-center bg-ink text-ivory py-3.5 font-semibold"
+              className="my-5 text-center bg-ink text-ivory py-3.5 font-semibold"
             >
               {ctaLabel}
             </a>
           )}
-        </nav>
+        </motion.nav>
       )}
-    </header>
+      </AnimatePresence>
+    </motion.header>
   );
 }

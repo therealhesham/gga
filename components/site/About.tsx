@@ -1,5 +1,7 @@
+import * as motion from "motion/react-client";
 import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
+import { EASE } from "@/lib/motion";
 import type { SiteData } from "@/lib/data";
 import { Img } from "./Img";
 import { Reveal } from "./Reveal";
@@ -13,14 +15,27 @@ export function About({ settings, pillars }: Pick<SiteData, "settings" | "pillar
     >
       <div className="max-w-7xl mx-auto w-full px-margin-mobile md:px-margin">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-20 items-center">
-          <Reveal className="lg:col-span-5">
-            <div className="relative">
+          <div className="lg:col-span-5">
+            {/* المراقبة على الأب: العنصر المقصوص بالكامل لا يُحتسب ظاهرًا عند IntersectionObserver */}
+            <motion.div
+              className="relative"
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.25 }}
+            >
               {/* إطار ذهبي رفيع مزاح خلف الصورة */}
-              <div
+              <motion.div
                 aria-hidden="true"
+                variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 1.2, delay: 0.5 } } }}
                 className="absolute inset-0 translate-x-2.5 translate-y-2.5 lg:-translate-x-5 lg:translate-y-5 border border-gold/50"
               />
-              <div className="relative aspect-[4/5] w-full overflow-hidden bg-ivory-deep">
+              <motion.div
+                variants={{
+                  hidden: { clipPath: "inset(0 0 100% 0)" },
+                  show: { clipPath: "inset(0 0 0% 0)", transition: { duration: 1.3, ease: EASE } },
+                }}
+                className="relative aspect-[4/5] w-full overflow-hidden bg-ivory-deep"
+              >
                 <Img
                   src={settings.aboutImage}
                   alt={settings.aboutPlaqueTitle || settings.companyName}
@@ -37,9 +52,9 @@ export function About({ settings, pillars }: Pick<SiteData, "settings" | "pillar
                     </p>
                   </div>
                 )}
-              </div>
-            </div>
-          </Reveal>
+              </motion.div>
+            </motion.div>
+          </div>
 
           <div className="lg:col-span-7 space-y-6 lg:ps-6">
             <Reveal>

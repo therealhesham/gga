@@ -1,6 +1,8 @@
+import * as motion from "motion/react-client";
 import { ArrowLeft } from "lucide-react";
 import { Icon } from "@/lib/icons";
 import { SECTION_IDS } from "@/lib/constants";
+import { fadeUp, stagger } from "@/lib/motion";
 import type { SiteData } from "@/lib/data";
 import { Reveal } from "./Reveal";
 import { SectionEyebrow } from "./SectionEyebrow";
@@ -22,11 +24,17 @@ export function Services({ settings, services }: Pick<SiteData, "settings" | "se
           <p className="text-base font-light leading-8 text-white/60 max-w-md">{settings.servicesIntro}</p>
         </Reveal>
 
-        <Reveal delay={120}>
+        <motion.div
+          variants={stagger(0.12, 0.1)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.15 }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t border-white/12 divide-y md:divide-y-0 divide-white/10">
             {services.map((s, i) => (
-              <a
+              <motion.a
                 key={s.id}
+                variants={fadeUp}
                 href={`#${SECTION_IDS.projects}`}
                 className={`group relative flex flex-col justify-between gap-10 p-7 md:p-9 min-h-[15rem] md:min-h-[20rem] transition-colors duration-500 hover:bg-white/[0.04] md:border-b md:border-white/10 ${
                   i % 2 === 0 ? "md:border-e" : ""
@@ -50,10 +58,10 @@ export function Services({ settings, services }: Pick<SiteData, "settings" | "se
                     <ArrowLeft className="size-4 transition-transform duration-500 group-hover:-translate-x-1.5" />
                   </span>
                 </div>
-              </a>
+              </motion.a>
             ))}
           </div>
-        </Reveal>
+        </motion.div>
       </div>
     </section>
   );
