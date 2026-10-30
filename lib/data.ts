@@ -21,6 +21,7 @@ const TEXT_DEFAULTS = {
   aboutP1: "",
   aboutP2: "",
   aboutPlaqueText: "",
+  ceoMessage: "",
   servicesIntro: "",
   qualityText: "",
   consultText: "",

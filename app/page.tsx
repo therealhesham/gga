@@ -15,6 +15,7 @@ import { Chrome } from "@/components/site/Chrome";
 import { Intro } from "@/components/site/Intro";
 import { ProjectsMap } from "@/components/site/ProjectsMap";
 import { MotionRoot } from "@/components/site/MotionRoot";
+import { CeoMessage } from "@/components/site/CeoMessage";
 import { ImageBand } from "@/components/site/ImageBand";
 import { JsonLd, organizationLd } from "@/components/site/JsonLd";
 
@@ -48,6 +49,7 @@ export default async function Home() {
             label="GGA — CONTRACTING"
             caption="نبني بإتقان، لنصنع معالم تدوم"
           />
+          <CeoMessage settings={settings} />
           <Services settings={settings} services={data.services} categories={data.categories} />
           <Projects
             eyebrow={settings.projectsEyebrow}

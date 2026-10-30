@@ -44,6 +44,13 @@ model SiteSettings {
   aboutPlaqueTitle String @default("") @db.VarChar(191)
   aboutPlaqueText  String @db.Text
 
+  // كلمة المدير التنفيذي (لا يظهر القسم إلا بعد إدخال الاسم والكلمة)
+  ceoEyebrow String @default("") @db.VarChar(191)
+  ceoName    String @default("") @db.VarChar(191)
+  ceoRole    String @default("") @db.VarChar(191)
+  ceoMessage String @db.Text
+  ceoImage   String @default("") @db.VarChar(1000)
+
   // الخدمات
   servicesEyebrow String @default("") @db.VarChar(191)
   servicesTitle   String @default("") @db.VarChar(500)

@@ -69,6 +69,16 @@ export const SETTINGS_GROUPS: Record<string, SettingsGroup> = {
       { name: "aboutPlaqueText", label: "نص اللوحة فوق الصورة", type: "textarea" },
     ],
   },
+  ceo: {
+    title: "كلمة المدير التنفيذي",
+    fields: [
+      { name: "ceoEyebrow", label: "العنوان الصغير", type: "text", placeholder: "كلمة المدير التنفيذي" },
+      { name: "ceoName", label: "اسم المدير التنفيذي", type: "text", help: "لا يظهر القسم في الموقع إلا بعد إدخال الاسم والكلمة معًا." },
+      { name: "ceoRole", label: "المنصب", type: "text", placeholder: "المدير التنفيذي" },
+      { name: "ceoMessage", label: "نص الكلمة", type: "textarea", help: "اترك سطرًا فارغًا بين الفقرات." },
+      { name: "ceoImage", label: "الصورة الشخصية", type: "image", help: "يفضَّل صورة رأسية (نسبة 4:5) بإضاءة جيدة." },
+    ],
+  },
   services: {
     title: "نصوص قسم الخدمات",
     fields: [
@@ -328,6 +338,7 @@ export const SECTIONS: Section[] = [
   { key: "identity", title: "الهوية والتواصل", description: "اسم المؤسسة، الشعار، الهاتف، العنوان", icon: "building-2", settings: "identity", collections: [] },
   { key: "hero", title: "الواجهة الرئيسية", description: "العنوان الكبير، الصورة، مؤشرات الأرقام", icon: "sparkles", settings: "hero", collections: ["stats"] },
   { key: "about", title: "عن المؤسسة", description: "النبذة، الصورة، ركائز المؤسسة", icon: "users", settings: "about", collections: ["pillars"] },
+  { key: "ceo", title: "كلمة المدير التنفيذي", description: "الكلمة والاسم والمنصب والصورة", icon: "user-round", settings: "ceo", collections: [] },
   { key: "services", title: "الخدمات", description: "عناوين القسم وبطاقات الخدمات", icon: "hard-hat", settings: "services", collections: ["services"] },
   { key: "projects", title: "المشاريع", description: "التصنيفات وبطاقات المشاريع", icon: "folder-open", settings: "projects", collections: ["categories", "projects"] },
   { key: "quality", title: "الجودة والمعايير", description: "بنود الجودة، المؤشرات، الشهادات", icon: "badge-check", settings: "quality", collections: ["quality-items", "metrics", "certifications"] },
