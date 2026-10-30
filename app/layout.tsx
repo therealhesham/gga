@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Tajawal } from "next/font/google";
+import { Tajawal } from "next/font/google";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -8,11 +8,6 @@ const tajawal = Tajawal({
   variable: "--font-tajawal",
   subsets: ["arabic", "latin"],
   weight: ["200", "300", "400", "500", "700", "800"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -54,9 +49,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="ar"
       dir="rtl"
-      className={`${tajawal.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${tajawal.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+      <body className="min-h-full flex flex-col">
         {children}
       </body>
     </html>

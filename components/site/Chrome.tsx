@@ -1,12 +1,6 @@
-import { Grain } from "./Grain";
 import { WhatsAppButton } from "./WhatsAppButton";
 
-/** عناصر عامة فوق كل صفحات الموقع: حبيبات خفيفة وزر واتساب */
+/** عناصر عامة فوق كل صفحات الموقع: زر واتساب */
 export function Chrome() {
-  return (
-    <>
-      <Grain />
-      <WhatsAppButton />
-    </>
-  );
+  return <WhatsAppButton />;
 }

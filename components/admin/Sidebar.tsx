@@ -41,7 +41,7 @@ export function Sidebar({ adminName, newInquiries }: Props) {
         )}
       </Link>
 
-      <p className="px-4 pt-5 pb-1 text-[11px] font-bold text-outline tracking-widest">محتوى الموقع</p>
+      <p className="px-4 pt-5 pb-1 text-sm font-bold text-outline">محتوى الموقع</p>
       {SECTIONS.map((s) => {
         const href = `/admin/section/${s.key}`;
         return (
@@ -57,7 +57,7 @@ export function Sidebar({ adminName, newInquiries }: Props) {
         );
       })}
 
-      <p className="px-4 pt-5 pb-1 text-[11px] font-bold text-outline tracking-widest">الحساب</p>
+      <p className="px-4 pt-5 pb-1 text-sm font-bold text-outline">الحساب</p>
       <Link
         href="/admin/account"
         onClick={() => setOpen(false)}

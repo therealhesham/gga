@@ -1,16 +1,14 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import { CircleAlert, CircleCheck, LoaderCircle, Send } from "lucide-react";
+import { CircleAlert, CircleCheck, LoaderCircle } from "lucide-react";
 import { submitInquiry, type InquiryState } from "@/app/actions/inquiry";
 import { RFQ_PROJECT_TYPES, RFQ_SCALES } from "@/lib/rfq";
 import { FileDrop } from "./FileDrop";
 
 const initial: InquiryState = { status: "idle" };
 
-const field =
-  "w-full bg-transparent border-0 border-b border-ink/20 rounded-none px-0 py-3 text-ink placeholder:text-ink/30 font-light focus:outline-none focus:border-gold text-base transition-colors";
-const label = "block text-sm font-medium text-ink/60";
+const field = "input";
 
 export function ConsultationForm() {
   const [state, action, pending] = useActionState(submitInquiry, initial);
@@ -23,7 +21,7 @@ export function ConsultationForm() {
   }, [state]);
 
   return (
-    <form ref={formRef} action={action} className="space-y-8">
+    <form ref={formRef} action={action} className="form">
       {/* مصيدة للبوتات - مخفية عن المستخدمين */}
       <input
         type="text"
@@ -31,16 +29,16 @@ export function ConsultationForm() {
         tabIndex={-1}
         autoComplete="off"
         aria-hidden="true"
-        className="hidden"
+        hidden
       />
 
       <fieldset>
-        <legend className={label}>نوع المشروع *</legend>
-        <div className="mt-3 flex flex-wrap gap-2.5">
+        <legend>نوع المشروع *</legend>
+        <div className="choices">
           {RFQ_PROJECT_TYPES.map((t, i) => (
             <label
               key={t}
-              className="cursor-pointer rounded-full border border-ink/15 px-5 py-2.5 text-sm font-medium text-ink/75 transition-colors hover:border-gold has-checked:border-ink has-checked:bg-ink has-checked:text-ivory has-focus-visible:ring-2 has-focus-visible:ring-gold"
+              className="choice"
             >
               <input
                 type="radio"
@@ -48,7 +46,6 @@ export function ConsultationForm() {
                 value={t}
                 required={i === 0}
                 defaultChecked={v.projectType === t}
-                className="sr-only"
               />
               {t}
             </label>
@@ -56,9 +53,9 @@ export function ConsultationForm() {
         </div>
       </fieldset>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        <div className="space-y-2">
-          <label htmlFor="rfq-scale" className={label}>
+      <div className="form__grid">
+        <div className="field">
+          <label htmlFor="rfq-scale">
             المساحة التقريبية أو الميزانية التقديرية
           </label>
           <select id="rfq-scale" name="budget" defaultValue={v.budget ?? ""} className={field}>
@@ -74,8 +71,8 @@ export function ConsultationForm() {
             ))}
           </select>
         </div>
-        <div className="space-y-2">
-          <label htmlFor="rfq-location" className={label}>
+        <div className="field">
+          <label htmlFor="rfq-location">
             موقع المشروع المقترح
           </label>
           <input
@@ -89,14 +86,14 @@ export function ConsultationForm() {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <span className={label}>إرفاق المخططات أو كراسة الشروط (اختياري)</span>
+      <div className="field">
+        <span >إرفاق المخططات أو كراسة الشروط (اختياري)</span>
         <FileDrop key={state.status === "success" ? "done" : "form"} />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        <div className="space-y-2">
-          <label htmlFor="rfq-name" className={label}>
+      <div className="form__grid">
+        <div className="field">
+          <label htmlFor="rfq-name">
             الاسم الكامل *
           </label>
           <input
@@ -110,8 +107,8 @@ export function ConsultationForm() {
             className={field}
           />
         </div>
-        <div className="space-y-2">
-          <label htmlFor="rfq-company" className={label}>
+        <div className="field">
+          <label htmlFor="rfq-company">
             اسم الجهة / الشركة
           </label>
           <input
@@ -124,8 +121,8 @@ export function ConsultationForm() {
             className={field}
           />
         </div>
-        <div className="space-y-2">
-          <label htmlFor="rfq-phone" className={label}>
+        <div className="field">
+          <label htmlFor="rfq-phone">
             رقم الجوال *
           </label>
           <input
@@ -137,11 +134,11 @@ export function ConsultationForm() {
             autoComplete="tel"
             defaultValue={v.phone}
             placeholder="05XXXXXXXX"
-            className={`${field} text-right`}
+            className={field}
           />
         </div>
-        <div className="space-y-2">
-          <label htmlFor="rfq-email" className={label}>
+        <div className="field">
+          <label htmlFor="rfq-email">
             البريد الإلكتروني
           </label>
           <input
@@ -152,13 +149,13 @@ export function ConsultationForm() {
             autoComplete="email"
             defaultValue={v.email}
             placeholder="name@company.com"
-            className={`${field} text-right`}
+            className={field}
           />
         </div>
       </div>
 
-      <div className="space-y-2">
-        <label htmlFor="rfq-details" className={label}>
+      <div className="field">
+        <label htmlFor="rfq-details">
           ملاحظات وموجز المتطلبات الهندسية
         </label>
         <textarea
@@ -171,29 +168,21 @@ export function ConsultationForm() {
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="w-full rounded-full py-4 bg-ink text-ivory text-sm font-semibold hover:bg-gold hover:text-white transition-colors duration-500 flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed"
-      >
+      <button type="submit" disabled={pending} aria-busy={pending} className="btn btn--block">
         <span>{pending ? "جارٍ الإرسال..." : "إرسال طلب التسعير للاستشاري الهندسي"}</span>
-        {pending ? (
-          <LoaderCircle className="size-5 animate-spin" />
-        ) : (
-          <Send className="size-5 rtl:-scale-x-100" />
-        )}
+        {pending && <LoaderCircle size={20} className="animate-spin" aria-hidden="true" />}
       </button>
 
-      <div aria-live="polite">
+      <div aria-live="polite" className="form__live">
         {state.status === "success" && (
-          <div className="flex items-center justify-center gap-2 p-4 border border-gold text-gold text-center font-semibold text-sm">
-            <CircleCheck className="size-5 shrink-0" />
+          <div className="alert alert--ok">
+            <CircleCheck size={20} aria-hidden="true" />
             تم استلام طلبكم بنجاح. سيتواصل معكم أحد مهندسينا التنفيذيين خلال 24 ساعة.
           </div>
         )}
         {state.status === "error" && (
-          <div className="flex items-center justify-center gap-2 p-4 bg-error-container border border-error text-on-error-container text-center font-bold text-sm">
-            <CircleAlert className="size-5 shrink-0" />
+          <div className="alert alert--err">
+            <CircleAlert size={20} aria-hidden="true" />
             {state.message}
           </div>
         )}

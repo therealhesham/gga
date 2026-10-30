@@ -6,8 +6,6 @@ type Props = {
   className?: string;
   sizes?: string;
   priority?: boolean;
-  /** تدرّج لوني موحّد (دفء معماري) ليبدو كل التصوير بأسلوب واحد */
-  grade?: boolean;
 };
 
 /**
@@ -15,23 +13,20 @@ type Props = {
  * الصور المحلية (/images و/media) تمر بمحسّن next/image (AVIF/WebP + أحجام متجاوبة)،
  * أما الروابط الخارجية التي يدخلها الأدمن فتبقى كما هي لتجنب إعداد قائمة نطاقات لكل مصدر.
  */
-export function Img({ src, alt, className = "", sizes = "100vw", priority, grade = true }: Props) {
+export function Img({ src, alt, className = "", sizes = "100vw", priority }: Props) {
   if (!src) {
-    return <div className="absolute inset-0 bg-surface-container-high" />;
+    return <div className="absolute inset-0 bg-paper-3" />;
   }
   const local = src.startsWith("/") && !src.startsWith("//");
   return (
-    <>
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes={sizes}
-        unoptimized={!local}
-        priority={priority}
-        className={`${className} ${grade ? "photo-grade" : ""}`}
-      />
-      {grade && <span aria-hidden="true" className="photo-tint" />}
-    </>
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes={sizes}
+      unoptimized={!local}
+      priority={priority}
+      className={className}
+    />
   );
 }
