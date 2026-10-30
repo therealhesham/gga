@@ -3,8 +3,6 @@
  * axes: light/grotesk-heavy/warm · posture: Restrained, ink bands declared as surface · contrast: pass · fold: pass · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: E, the old hero hid its text until a script ran; the new one is visible by default and animates from visible */
 /* Hallmark · waive 39b · inputs and selects stand 48px and buttons 44 to 52px, only the file drop zone is taller · the drop zone takes dragged plans and bills of quantities so it needs a large target */
-/* Hallmark · waive 49b · the one link that wraps at 320px is the projects call to action, two lines at most · its label is a fixed phrase the admin sets and cannot shorten */
-/* Hallmark · waive 77 · the CEO band holds only the placeholder message the admin entered and the quality body is rows and bars across two columns · the band fills out once the real message and photo replace the placeholder */
 @import "tailwindcss";
 @import "./tokens.css";
 @import "./base.css" layer(base);

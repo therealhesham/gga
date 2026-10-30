@@ -6,7 +6,7 @@ import { HeroMedia } from "./HeroMedia";
 export function Hero({ settings }: Pick<SiteData, "settings">) {
   preload("/hero/poster.jpg", { as: "image", fetchPriority: "high" });
   return (
-    <div className="hero on-ink">
+    <section id={SECTION_IDS.hero} className="hero on-ink">
       <div className="hero__media">
         <HeroMedia src="/hero/construction.mp4" poster="/hero/poster.jpg" />
       </div>
@@ -27,6 +27,6 @@ export function Hero({ settings }: Pick<SiteData, "settings">) {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getSiteData } from "@/lib/data";
-import { SECTION_IDS } from "@/lib/constants";
 import { ComingSoon } from "@/components/site/ComingSoon";
 import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
@@ -39,10 +38,8 @@ export default async function Home() {
         <Chrome />
         <Header settings={settings} />
         <main>
-          <section id={SECTION_IDS.hero}>
-            <Hero settings={settings} />
-            <Figures settings={settings} stats={data.stats} />
-          </section>
+          <Hero settings={settings} />
+          <Figures settings={settings} stats={data.stats} />
           <About settings={settings} pillars={data.pillars} />
           <CeoMessage settings={settings} />
           <Services settings={settings} services={data.services} categories={data.categories} />
