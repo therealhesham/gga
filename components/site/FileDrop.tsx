@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { FileText, X } from "lucide-react";
+import { FileText, Upload, X } from "lucide-react";
 import { RFQ_FILE, RFQ_FILE_HINT } from "@/lib/rfq";
 
 const fmt = (b: number) => (b > 1048576 ? `${(b / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(b / 1024))} KB`);
@@ -37,7 +37,7 @@ export function FileDrop({ name = "files" }: { name?: string }) {
       }
     }
     sync(merged);
-    setError(errors.join("، "));
+    setError(errors.join(" · "));
   };
 
   return (
@@ -63,13 +63,17 @@ export function FileDrop({ name = "files" }: { name?: string }) {
           setDrag(false);
           add(Array.from(e.dataTransfer.files));
         }}
-        className="drop"
-        data-drag={drag}
+        className={`flex cursor-pointer flex-col items-center gap-2 border border-dashed px-6 py-8 text-center transition-colors duration-300 ${
+          drag ? "border-gold bg-gold/10" : "border-ink/25 hover:border-gold hover:bg-gold/5"
+        }`}
       >
-        <strong>اسحب الملفات هنا أو اضغط للاختيار</strong>
-        <small>
-          {RFQ_FILE_HINT}، حتى {RFQ_FILE.maxFiles} ملفات، 10MB لكل ملف
-        </small>
+        <span className="grid size-11 place-items-center rounded-full border border-gold/40 text-gold">
+          <Upload className="size-5 [stroke-width:1.5]" />
+        </span>
+        <span className="text-sm font-medium text-ink">اسحب الملفات هنا أو اضغط للاختيار</span>
+        <span className="text-xs font-light text-ink/50">
+          {RFQ_FILE_HINT} · حتى {RFQ_FILE.maxFiles} ملفات، 10MB لكل ملف
+        </span>
       </div>
 
       <input
@@ -86,21 +90,29 @@ export function FileDrop({ name = "files" }: { name?: string }) {
       />
 
       {files.length > 0 && (
-        <ul className="files">
+        <ul className="mt-3 space-y-2">
           {files.map((f, i) => (
-            <li key={`${f.name}-${i}`}>
-              <FileText size={16} aria-hidden="true" />
-              <span>{f.name}</span>
-              <small>{fmt(f.size)}</small>
-              <button type="button" aria-label={`إزالة ${f.name}`} onClick={() => sync(files.filter((_, k) => k !== i))}>
-                <X size={14} aria-hidden="true" />
+            <li
+              key={`${f.name}-${i}`}
+              className="flex items-center gap-3 rounded-full border border-ink/10 bg-ivory px-4 py-2 text-sm"
+            >
+              <FileText className="size-4 shrink-0 text-gold" />
+              <span className="min-w-0 flex-1 truncate font-medium text-ink">{f.name}</span>
+              <span className="shrink-0 text-xs font-light text-ink/45 tabular-nums">{fmt(f.size)}</span>
+              <button
+                type="button"
+                aria-label={`إزالة ${f.name}`}
+                onClick={() => sync(files.filter((_, k) => k !== i))}
+                className="grid size-6 place-items-center rounded-full text-ink/50 transition-colors hover:bg-ink hover:text-ivory"
+              >
+                <X className="size-3.5" />
               </button>
             </li>
           ))}
         </ul>
       )}
       {error && (
-        <p role="alert" className="alert alert--err" style={{ marginBlockStart: "var(--space-sm)" }}>
+        <p role="alert" className="mt-3 text-xs font-medium text-error">
           {error}
         </p>
       )}

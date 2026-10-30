@@ -1,8 +1,10 @@
 "use client";
 
+import { motion } from "motion/react";
+import { fadeUp } from "@/lib/motion";
 import { FILTER_EVENT } from "@/lib/service-filter";
 
-/** صف خدمة: يفعّل تصنيف المشاريع المقابل ثم يمرّر لقسم المشاريع */
+/** كرت خدمة: يفعّل تصنيف المشاريع المقابل ثم يمرّر لقسم المشاريع */
 export function ServiceCard({
   categoryId,
   href,
@@ -15,12 +17,13 @@ export function ServiceCard({
   children: React.ReactNode;
 }) {
   return (
-    <a
+    <motion.a
+      variants={fadeUp}
       href={href}
       className={className}
       onClick={() => window.dispatchEvent(new CustomEvent(FILTER_EVENT, { detail: { categoryId } }))}
     >
       {children}
-    </a>
+    </motion.a>
   );
 }

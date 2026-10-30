@@ -1,18 +1,25 @@
-/* Hallmark · shape: portfolio-index · genre: editorial · theme: brand · redesign: full · job: hire
- * paper: oklch(96.8% 0.009 85) · accent: oklch(78.7% 0.107 86) · display: Tajawal 800 · body: Tajawal 400 · hero: Poster · nav: edge-aligned bar, wordmark and one action · footer: mast, the wordmark over the links · signature: the project index, one large photograph that follows the selected row
- * axes: light/grotesk-heavy/warm · posture: Restrained, ink bands declared as surface · contrast: pass · fold: pass · v2.0.0 */
-/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: E, the old hero hid its text until a script ran; the new one is visible by default and animates from visible */
-/* Hallmark · waive 39b · inputs and selects stand 48px and buttons 44 to 52px, only the file drop zone is taller · the drop zone takes dragged plans and bills of quantities so it needs a large target */
 @import "tailwindcss";
-@import "./tokens.css";
-@import "./base.css" layer(base);
-@import "./site.css";
+
+/* التثبيت الأفقي للمعرض: شاشات كبيرة مع مؤشر دقيق (ماوس) فقط، وغير ذلك كاروسيل لمس */
+@custom-variant pinned (@media (min-width: 1024px) and (pointer: fine));
 
 @theme inline {
   --font-sans: var(--font-tajawal), sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-tajawal), sans-serif;
 }
 
 @theme {
+  /* هوية الموقع العام: فحمي + عاجي + ذهبي الشعار */
+  --color-ink: #0f0f11;
+  --color-ink-soft: #17171a;
+  --color-ivory: #f7f4ee;
+  --color-ivory-deep: #efeae0;
+  --color-gold: #a9822f;
+  --color-gold-soft: #d8b565;
+  /* حجر جيري فاتح لأقسام الإيقاع الفاتحة */
+  --color-stone: #e9e3d8;
+
   /* ألوان التصميم */
   --color-surface: #faf8f5;
   --color-background: #faf8f5;
@@ -23,7 +30,7 @@
   --color-surface-dim: #dbd5c8;
   --color-surface-tint: #966e1d;
   --color-surface-variant: #e6e1d7;
-  --color-surface-container-lowest: #fffdf8;
+  --color-surface-container-lowest: #ffffff;
   --color-surface-container-low: #f7f3eb;
   --color-surface-container: #f2ede4;
   --color-surface-container-high: #ede8df;
@@ -35,7 +42,7 @@
   --color-outline-variant: #ddd5c7;
 
   --color-primary: #966e1d;
-  --color-on-primary: #fffdf8;
+  --color-on-primary: #ffffff;
   --color-primary-container: #b58a32;
   --color-on-primary-container: #3f2c00;
   --color-primary-fixed: #ffdea7;
@@ -44,17 +51,17 @@
   --color-on-primary-fixed-variant: #5a3e00;
 
   --color-secondary: #5c5961;
-  --color-on-secondary: #fffdf8;
+  --color-on-secondary: #ffffff;
   --color-secondary-container: #ece8e3;
   --color-on-secondary-container: #5c5a5f;
 
   --color-tertiary: #8a651e;
-  --color-on-tertiary: #fffdf8;
+  --color-on-tertiary: #ffffff;
   --color-tertiary-container: #c39b4e;
   --color-on-tertiary-container: #3e2a00;
 
   --color-error: #ba1a1a;
-  --color-on-error: #fffdf8;
+  --color-on-error: #ffffff;
   --color-error-container: #ffdad6;
   --color-on-error-container: #93000a;
 
@@ -70,6 +77,8 @@
   --spacing-space-xl: 2.5rem;
 
   /* سلّم الخطوط */
+  --text-display: 2.5rem;
+  --text-display--line-height: 1.2;
   --text-headline-lg: 1.875rem;
   --text-headline-lg--line-height: 1.25;
   --text-headline-md: 1.5rem;
@@ -90,23 +99,171 @@
   --text-label-sm--line-height: 1.4;
 }
 
-/* شريط التقدم في صفحة "قريبًا": يتحرك بالإزاحة لا بالموضع */
+@layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-surface);
+    color: #18181b;
+    font-family: var(--font-sans);
+  }
+
+  body {
+    overscroll-behavior: none;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* snap خفيف (proximity) للصفحة الرئيسية فقط: يساعد على الاستقرار عند بداية القسم دون أن يشدّ الزائر */
+  html:has([data-snap-page]) {
+    scroll-snap-type: y proximity;
+  }
+
+  ::selection {
+    background: var(--color-gold-soft);
+    color: var(--color-ink);
+  }
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* شريط التقدم في صفحة "قريبًا" */
 @keyframes cs-slide {
   from {
-    transform: translateX(35%);
+    right: -35%;
   }
   to {
-    transform: translateX(-100%);
+    right: 100%;
   }
 }
 
 .cs-bar {
-  animation: cs-slide 2.4s var(--ease-in-out) infinite;
+  animation: cs-slide 2.4s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .cs-bar {
     animation: none;
-    transform: none;
+    right: 0;
   }
+}
+
+
+/* ===== الموقع العام ===== */
+.snap-section {
+  scroll-snap-align: start;
+}
+
+/* حركة بطيئة للفيديو خلف الهيرو */
+@keyframes hero-zoom {
+  from {
+    transform: scale(1.03);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+.hero-zoom {
+  animation: hero-zoom 26s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .hero-zoom {
+    animation: none;
+  }
+}
+
+/* ===== افتتاحية، شريط الشركاء، حبيبات ===== */
+
+/* شبكة أمان: لو لم يعمل JS تختفي الافتتاحية وحدها */
+@keyframes intro-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+.intro-failsafe {
+  animation: intro-failsafe 0.4s ease 4.5s forwards;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50%);
+  }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee linear infinite;
+}
+.marquee-reverse {
+  animation-direction: reverse;
+}
+.marquee-mask:hover .marquee-track {
+  animation-play-state: paused;
+}
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  .intro-failsafe {
+    animation-duration: 0.01s;
+    animation-delay: 0.5s;
+  }
+}
+
+/* طبقة شبكة هندسية (CAD) تظهر عند المرور على كروت الخدمات والمشاريع */
+.cad-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><path d='M0 24.5H120M0 48.5H120M0 72.5H120M0 96.5H120M24.5 0V120M48.5 0V120M72.5 0V120M96.5 0V120' stroke='%23d8b565' stroke-opacity='.13' fill='none'/><path d='M0 .5H120M.5 0V120' stroke='%23d8b565' stroke-opacity='.38' fill='none'/><circle cx='.5' cy='.5' r='3' stroke='%23d8b565' stroke-opacity='.55' fill='none'/></svg>");
+  -webkit-mask-image: radial-gradient(ellipse at 50% 55%, #000 25%, transparent 88%);
+  mask-image: radial-gradient(ellipse at 50% 55%, #000 25%, transparent 88%);
+}
+
+/* ظهور الشبكة عند المرور (قاعدة صريحة لأن CSS غير المُطبَّق في layer يتغلّب على أدوات Tailwind) */
+.group:hover > .cad-grid,
+.group:focus-visible > .cad-grid {
+  opacity: 1;
+}
+
+/* تدرّج لوني موحّد للصور: دفء خفيف وتباين أعلى قليلًا */
+.photo-grade {
+  filter: saturate(0.92) contrast(1.05) sepia(0.08);
+}
+.photo-tint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(160deg, rgba(201, 150, 60, 0.24), rgba(30, 20, 10, 0.1) 62%, transparent);
+  mix-blend-mode: soft-light;
 }

@@ -57,7 +57,7 @@ export default async function DashboardPage() {
           <Link
             key={label}
             href={href}
-            className="bg-surface-container-lowest border border-outline-variant p-5 hover:border-primary active:translate-y-px transition-colors"
+            className="bg-surface-container-lowest border border-outline-variant p-5 hover:border-primary hover:shadow-md transition-all"
           >
             <I className="size-6 text-primary mb-3" />
             <div className="text-3xl font-extrabold text-on-surface">{value}</div>

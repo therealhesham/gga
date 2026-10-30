@@ -2,9 +2,14 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowLeft } from "lucide-react";
 import { KSA_CITIES, KSA_PATH, KSA_VIEWBOX, matchCity } from "@/lib/ksa";
+import { EASE } from "@/lib/motion";
 import { CountUp } from "./CountUp";
 import { Img } from "./Img";
+import { Reveal, RevealHeading } from "./Reveal";
+import { SectionEyebrow } from "./SectionEyebrow";
 
 type MapProject = {
   id: number;
@@ -30,105 +35,190 @@ export function ProjectsMap({ projects }: { projects: MapProject[] }) {
   if (groups.length === 0) return null;
 
   const current = groups.find((g) => g.city === activeCity) ?? groups[0];
-  const cityWord = groups.length === 1 ? "مدينة" : groups.length === 2 ? "مدينتين" : groups.length <= 10 ? "مدن" : "مدينة";
 
   return (
-    <div id="projects-map" className="map">
-      <div>
-        <div className="grid-12" style={{ alignItems: "center" }}>
-          <div className="c-1-5">
-            <h2>حضور وطني</h2>
-            <p className="lead" style={{ marginBlockStart: "var(--space-md)" }}>
-              مشاريعنا في أنحاء المملكة
-            </p>
-            <p className="muted" style={{ marginBlockStart: "var(--space-lg)" }}>
-              <CountUp text={String(projects.length)} /> مشروعاً في <CountUp text={String(groups.length)} /> {cityWord}.
-              اختر مدينة لاستعراض مشاريعها.
-            </p>
+    <section
+      id="projects-map"
+      className="snap-section relative w-full min-h-svh flex items-center bg-ink text-white py-24 md:py-32 overflow-hidden"
+    >
+      <div className="relative max-w-7xl mx-auto w-full px-margin-mobile md:px-margin">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          <div className="lg:col-span-5 order-2 lg:order-1">
+            <Reveal>
+              <SectionEyebrow index="04" dark>
+                حضور وطني
+              </SectionEyebrow>
+            </Reveal>
+            <RevealHeading size="text-[clamp(2rem,3.6vw,3.2rem)]">مشاريعنا في أنحاء المملكة</RevealHeading>
+            <Reveal delay={150}>
+              <p className="mt-6 text-base font-light leading-8 text-white/60 max-w-md">
+                <span className="font-display text-gold-soft text-xl">
+                  <CountUp text={String(projects.length)} />
+                </span>{" "}
+                مشروعاً في{" "}
+                <span className="font-display text-gold-soft text-xl">
+                  <CountUp text={String(groups.length)} />
+                </span>{" "}
+                {groups.length === 1 ? "مدينة" : groups.length === 2 ? "مدينتين" : groups.length <= 10 ? "مدن" : "مدينة"}. اختر مدينة لاستعراض مشاريعها.
+              </p>
+            </Reveal>
 
-            <ul className="map__chips">
-              {groups.map((g) => (
-                <li key={g.city}>
-                  <button
-                    type="button"
-                    className="map__chip"
-                    aria-pressed={g.city === current.city}
-                    onClick={() => setActiveCity(g.city)}
+            <Reveal delay={120}>
+              <div className="mt-8 flex flex-wrap gap-2">
+                {groups.map((g) => {
+                  const on = g.city === current.city;
+                  return (
+                    <button
+                      key={g.city}
+                      type="button"
+                      onClick={() => setActiveCity(g.city)}
+                      onMouseEnter={() => setActiveCity(g.city)}
+                      className={`rounded-full px-4 py-2 text-sm border transition-colors duration-300 ${
+                        on
+                          ? "bg-gold-soft text-ink border-gold-soft font-semibold"
+                          : "border-white/20 text-white/70 hover:border-gold-soft hover:text-white"
+                      }`}
+                    >
+                      {g.city}
+                      <span className={`ms-2 text-xs ${on ? "text-ink/60" : "text-white/40"}`}>
+                        {g.items.length}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="mt-8 min-h-[9rem]">
+                <AnimatePresence mode="wait">
+                  <motion.ul
+                    key={current.city}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.45, ease: EASE }}
+                    className="divide-y divide-white/10 border-y border-white/10"
                   >
-                    {g.city}
-                    <span>{g.items.length}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-
-            <ul className="map__list">
-              {current.items.slice(0, 3).map((p) => (
-                <li key={p.id}>
-                  <Link href={`/projects/${p.id}`}>
-                    <span className="map__thumb">
-                      <Img src={p.imageUrl} alt="" sizes="64px" className="object-cover" />
-                    </span>
-                    <span>
-                      <small>{p.kind}</small>
-                      <strong>{p.title}</strong>
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+                    {current.items.slice(0, 3).map((p) => (
+                      <li key={p.id}>
+                        <Link
+                          href={`/projects/${p.id}`}
+                         
+                          className="group flex items-center gap-4 py-3.5"
+                        >
+                          <span className="relative size-16 shrink-0 overflow-hidden bg-ink-soft">
+                            <Img src={p.imageUrl} alt={p.title} sizes="64px" className="object-cover" />
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className="block text-xs text-gold-soft">{p.kind}</span>
+                            <span className="block truncate font-display text-base group-hover:text-gold-soft transition-colors">
+                              {p.title}
+                            </span>
+                          </span>
+                          <ArrowLeft className="size-4 text-white/40 transition-transform group-hover:-translate-x-1.5 group-hover:text-gold-soft" />
+                        </Link>
+                      </li>
+                    ))}
+                  </motion.ul>
+                </AnimatePresence>
+              </div>
+            </Reveal>
           </div>
 
-          <div className="c-6-12">
-            <svg
+          <div className="lg:col-span-7 order-1 lg:order-2">
+            <motion.svg
               viewBox={`0 0 ${KSA_VIEWBOX.width} ${KSA_VIEWBOX.height}`}
-              className="map__svg"
+              className="w-full h-auto max-h-[72svh]"
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.3 }}
               role="img"
               aria-label="خريطة المملكة العربية السعودية بمواقع المشاريع"
             >
-              <path d={KSA_PATH} className="map__shape-fill" />
-              <path d={KSA_PATH} className="map__shape-line" />
-              {groups.map((g) => {
+              <defs>
+                <pattern id="ksa-dots" width="16" height="16" patternUnits="userSpaceOnUse">
+                  <circle cx="2" cy="2" r="1.1" fill="#d8b565" fillOpacity="0.28" />
+                </pattern>
+              </defs>
+              <motion.path
+                d={KSA_PATH}
+                fill="url(#ksa-dots)"
+                variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 1.4, delay: 1.2 } } }}
+              />
+              <motion.path
+                d={KSA_PATH}
+                fill="none"
+                stroke="#d8b565"
+                strokeOpacity="0.75"
+                strokeWidth="1.4"
+                strokeLinejoin="round"
+                variants={{
+                  hidden: { pathLength: 0 },
+                  show: { pathLength: 1, transition: { duration: 2.6, ease: EASE } },
+                }}
+              />
+
+              {groups.map((g, i) => {
                 const on = g.city === current.city;
                 const [cx, cy] = g.pos;
                 return (
-                  <g
+                  <motion.g
                     key={g.city}
                     transform={`translate(${cx} ${cy})`}
-                    className="map__pin"
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: { opacity: 1, transition: { delay: 1.8 + i * 0.12, duration: 0.6 } },
+                    }}
                     role="button"
                     tabIndex={0}
                     aria-label={`${g.city}: ${g.items.length} مشروع`}
-                    aria-pressed={on}
-                    onClick={() => setActiveCity(g.city)}
+                    onMouseEnter={() => setActiveCity(g.city)}
                     onFocus={() => setActiveCity(g.city)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        setActiveCity(g.city);
-                      }
-                    }}
+                    onClick={() => setActiveCity(g.city)}
+                    className="cursor-pointer outline-none"
                   >
                     <circle r="30" fill="transparent" />
-                    <circle r={on ? 11 : 7} className="map__dot" />
-                    {on && <circle r="19" className="map__ring" />}
+                    {/* نبض هادئ للمدينة المختارة فقط */}
+                    {on && (
+                      <motion.circle
+                        r="9"
+                        fill="#d8b565"
+                        fillOpacity="0.3"
+                        animate={{ r: [9, 34], opacity: [0.6, 0] }}
+                        transition={{ duration: 2.8, repeat: Infinity, ease: "easeOut" }}
+                      />
+                    )}
+                    <circle r={on ? 11 : 7} fill="#d8b565" className="transition-all duration-300" />
+                    {on && <circle r="19" fill="none" stroke="#d8b565" strokeWidth="1.2" />}
                     {g.items.length > 1 && (
-                      <text y="4.2" textAnchor="middle" className="map__count">
+                      <text
+                        y="4.2"
+                        textAnchor="middle"
+                        fontSize="11"
+                        fontWeight="700"
+                        fill="#0f0f11"
+                        style={{ pointerEvents: "none" }}
+                      >
                         {g.items.length}
                       </text>
                     )}
                     {on && (
-                      <text y="-30" textAnchor="middle" className="map__city">
+                      <text
+                        y="-30"
+                        textAnchor="middle"
+                        fontSize="26"
+                        fill="#fff"
+                        style={{ pointerEvents: "none", fontFamily: "var(--font-display)" }}
+                      >
                         {g.city}
                       </text>
                     )}
-                  </g>
+                  </motion.g>
                 );
               })}
-            </svg>
+            </motion.svg>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

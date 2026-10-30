@@ -7,7 +7,9 @@ export function Header({ settings, home = true }: { settings: SiteSettingsData; 
       companyName={settings.companyName}
       companyTagline={settings.companyTagline}
       ctaLabel={settings.navCtaLabel}
+      topAddress={settings.topAddress}
       phone={settings.phone}
+      crBadge={settings.crBadge}
       home={home}
     />
   );

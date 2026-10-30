@@ -17,7 +17,17 @@ export function HeroMedia({ src, poster }: { src: string; poster: string }) {
   }, []);
 
   return (
-    <video ref={ref} autoPlay muted loop playsInline preload="auto" poster={poster} aria-hidden="true">
+    <video
+      ref={ref}
+      className="hero-zoom absolute inset-0 size-full object-cover"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+      poster={poster}
+      aria-hidden="true"
+    >
       <source src={src} type="video/mp4" />
     </video>
   );

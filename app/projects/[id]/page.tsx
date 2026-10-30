@@ -2,13 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { MapPin, Ruler } from "lucide-react";
 import { getSiteData } from "@/lib/data";
+import { Icon } from "@/lib/icons";
 import { Chrome } from "@/components/site/Chrome";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { Img } from "@/components/site/Img";
 import { JsonLd, projectBreadcrumbLd } from "@/components/site/JsonLd";
 import { MotionRoot } from "@/components/site/MotionRoot";
+import { Reveal } from "@/components/site/Reveal";
 
 type Params = Promise<{ id: string }>;
 
@@ -40,7 +43,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default function ProjectPage({ params }: { params: Params }) {
   return (
     <MotionRoot intro={false}>
-      <Suspense fallback={<div className="band-ink" style={{ minHeight: "100svh" }} />}>
+      <Suspense fallback={<div className="min-h-svh bg-ink" />}>
         <ProjectContent params={params} />
       </Suspense>
     </MotionRoot>
@@ -55,43 +58,75 @@ async function ProjectContent({ params }: { params: Params }) {
   const others = data.projects.filter((p) => p.id !== project.id).slice(0, 3);
 
   return (
-    <div className="site">
+    <>
       <JsonLd data={projectBreadcrumbLd(project)} />
       <Chrome />
       <Header settings={settings} home={false} />
 
-      <main>
+      <main className="bg-ivory text-ink">
         {/* غلاف المشروع */}
-        <section className="cover on-ink">
-          <div className="cover__media">
+        <section className="relative isolate flex min-h-[80svh] items-end overflow-hidden bg-ink text-white">
+          <div className="absolute inset-0 -z-10">
             <Img src={project.imageUrl} alt={project.title} sizes="100vw" priority className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/35" />
+            <div className="absolute inset-0 bg-gradient-to-l from-ink/60 via-transparent to-transparent" />
           </div>
-          <div className="container cover__body">
-            <ol className="crumbs" aria-label="مسار التنقل">
-              <li>
-                <Link href="/">الرئيسية</Link>
-              </li>
-              <li>
-                <Link href="/#featured-projects">المشاريع</Link>
-              </li>
-            </ol>
-            <h1>{project.title}</h1>
-            <p className="cover__meta">
-              {[project.kind, project.badge, project.location, project.meta].filter(Boolean).join("، ")}
-            </p>
+          <div className="max-w-7xl mx-auto w-full px-margin-mobile md:px-margin pb-14 md:pb-20 pt-40">
+            <Reveal>
+              <nav aria-label="مسار التنقل" className="mb-6 flex items-center gap-2 text-sm font-light text-white/60">
+                <Link href="/" className="hover:text-gold-soft transition-colors">
+                  الرئيسية
+                </Link>
+                <span>/</span>
+                <Link href="/#featured-projects" className="hover:text-gold-soft transition-colors">
+                  المشاريع
+                </Link>
+              </nav>
+              <div className="flex flex-wrap items-center gap-3 mb-5 text-sm">
+                {project.kind && <span className="font-medium text-gold-soft">{project.kind}</span>}
+                {project.badge && (
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${
+                      project.badgePrimary ? "bg-gold-soft text-ink" : "bg-white/15 text-white backdrop-blur-sm"
+                    }`}
+                  >
+                    {project.badge}
+                  </span>
+                )}
+              </div>
+              <h1 className="font-display font-light text-[clamp(2.2rem,5.4vw,4.6rem)] leading-[1.22] tracking-[-0.015em] max-w-4xl">
+                {project.title}
+              </h1>
+              <div className="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-sm font-light text-white/70">
+                {project.location && (
+                  <span className="flex items-center gap-2">
+                    <MapPin className="size-4 text-white/50" /> {project.location}
+                  </span>
+                )}
+                {project.meta && (
+                  <span className="flex items-center gap-2">
+                    <Ruler className="size-4 text-white/50" /> {project.meta}
+                  </span>
+                )}
+              </div>
+            </Reveal>
           </div>
         </section>
 
         {/* الوصف والمواصفات */}
-        <section className="band section--tall">
-          <div className="container grid-12">
-            <div className="c-1-7">
-              <h2 style={{ marginBlockEnd: "var(--space-xl)" }}>عن المشروع</h2>
-              <p className="long-text">{project.description}</p>
-            </div>
+        <section className="py-24 md:py-32">
+          <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-24">
+            <Reveal className="lg:col-span-7">
+              <span className="flex items-center gap-3 mb-6 text-sm font-medium text-gold">
+                <span className="h-px w-10 bg-gold" /> عن المشروع
+              </span>
+              <p className="text-lg md:text-xl font-light leading-10 text-ink/75 whitespace-pre-line">
+                {project.description}
+              </p>
+            </Reveal>
 
-            <div className="c-8-12">
-              <dl className="spec">
+            <Reveal delay={120} className="lg:col-span-5">
+              <dl className="border-t border-ink/15">
                 {[
                   ["نوع المشروع", project.kind],
                   ["الموقع", project.location],
@@ -100,50 +135,63 @@ async function ProjectContent({ params }: { params: Params }) {
                 ]
                   .filter(([, v]) => v)
                   .map(([k, v]) => (
-                    <div key={k}>
-                      <dt>{k}</dt>
-                      <dd>{v}</dd>
+                    <div key={k} className="flex items-baseline justify-between gap-6 border-b border-ink/10 py-4">
+                      <dt className="text-sm font-light text-ink/50">{k}</dt>
+                      <dd className="font-display text-base">{v}</dd>
                     </div>
                   ))}
               </dl>
 
               {project.features.length > 0 && (
-                <ul className="plain-list">
+                <ul className="mt-8 grid grid-cols-1 gap-4">
                   {project.features.map((f, i) => (
-                    <li key={i}>{f.text}</li>
+                    <li key={i} className="flex items-center gap-3 text-base font-light text-ink/75">
+                      <Icon name={f.icon} className="size-5 text-ink/45 shrink-0 [stroke-width:1.4]" />
+                      {f.text}
+                    </li>
                   ))}
                 </ul>
               )}
-            </div>
+            </Reveal>
           </div>
         </section>
 
         {/* مشاريع أخرى */}
         {others.length > 0 && (
-          <section className="band-2 section--tall">
-            <div className="container">
-              <div className="head">
-                <h2>من أعمالنا</h2>
-              </div>
-              <ul className="others">
-                {others.map((p) => (
-                  <li key={p.id}>
-                    <Link href={`/projects/${p.id}`}>
-                      <span className="about__photo">
-                        <Img src={p.imageUrl} alt="" sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
+          <section className="py-24 md:py-32">
+            <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin">
+              <Reveal className="mb-12">
+                <span className="flex items-center gap-3 mb-4 text-sm font-medium text-gold">
+                  <span className="h-px w-10 bg-gold" /> مشاريع أخرى
+                </span>
+                <h2 className="font-display font-normal text-[clamp(2rem,3.4vw,3rem)]">من أعمالنا</h2>
+              </Reveal>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {others.map((p, i) => (
+                  <Reveal key={p.id} delay={i * 100}>
+                    <Link href={`/projects/${p.id}`} className="group block">
+                      <span className="relative block aspect-[4/5] overflow-hidden bg-ivory-deep">
+                        <Img
+                          src={p.imageUrl}
+                          alt={p.title}
+                          sizes="(min-width: 768px) 33vw, 100vw"
+                          className="object-cover transition-transform duration-[1400ms] group-hover:scale-[1.06]"
+                        />
                       </span>
-                      <small>{p.kind}</small>
-                      <strong>{p.title}</strong>
+                      <span className="mt-4 block text-sm font-medium text-gold">{p.kind}</span>
+                      <span className="mt-1 block font-display text-xl group-hover:text-gold transition-colors">
+                        {p.title}
+                      </span>
                     </Link>
-                  </li>
+                  </Reveal>
                 ))}
-              </ul>
+              </div>
             </div>
           </section>
         )}
       </main>
 
       <Footer settings={settings} services={data.services} homeBase="/" />
-    </div>
+    </>
   );
 }

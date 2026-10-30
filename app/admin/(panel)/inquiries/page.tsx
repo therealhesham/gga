@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Archive, Download, MailOpen, Phone } from "lucide-react";
+import { Archive, MailOpen, Phone } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { deleteInquiry, setInquiryStatus } from "@/app/admin/actions";
 import { formatDate } from "@/lib/format";
@@ -27,8 +27,7 @@ function Details({ text }: { text: string }) {
                 className="text-primary font-semibold hover:underline"
                 download
               >
-                {m[1].trim() || m[2]}{" "}
-                <Download className="inline size-4" aria-hidden="true" />
+                {m[1].trim() || m[2]} ⬇
               </a>
             ) : (
               line || "\u00a0"

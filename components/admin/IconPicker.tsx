@@ -32,7 +32,7 @@ export function IconPicker({ name, value, onChange, allowEmpty }: Props) {
       </button>
 
       {open && (
-        <div className="absolute z-30 mt-1 w-full min-w-[300px] max-h-72 overflow-y-auto bg-surface-container-lowest border border-outline-variant p-3">
+        <div className="absolute z-30 mt-1 w-full min-w-[300px] max-h-72 overflow-y-auto bg-surface-container-lowest border border-outline-variant shadow-xl p-3">
           {allowEmpty && (
             <button
               type="button"

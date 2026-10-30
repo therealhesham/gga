@@ -37,7 +37,7 @@ export function PasswordForm() {
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-on-primary font-bold hover:bg-primary-container active:translate-y-px transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+        className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-on-primary font-bold hover:bg-primary-container transition-colors disabled:opacity-70"
       >
         {pending && <LoaderCircle className="size-4 animate-spin" />}
         تغيير كلمة المرور
