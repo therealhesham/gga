@@ -15,7 +15,7 @@ export function PasswordForm() {
     <form action={action} className="space-y-5 max-w-md">
       {[
         ["current", "كلمة المرور الحالية", "current-password"],
-        ["next", "كلمة المرور الجديدة (8 أحرف على الأقل)", "new-password"],
+        ["next", "كلمة المرور الجديدة (12 حرفًا على الأقل)", "new-password"],
         ["confirm", "تأكيد كلمة المرور الجديدة", "new-password"],
       ].map(([name, label, autoComplete]) => (
         <div key={name} className="space-y-2">

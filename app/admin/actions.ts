@@ -108,7 +108,7 @@ export async function changePassword(
   const next = String(formData.get("next") ?? "");
   const confirm = String(formData.get("confirm") ?? "");
 
-  if (next.length < 8) return { message: "كلمة المرور الجديدة يجب ألا تقل عن 8 أحرف." };
+  if (next.length < 12) return { message: "كلمة المرور الجديدة يجب ألا تقل عن 12 حرفًا." };
   if (next !== confirm) return { message: "تأكيد كلمة المرور غير مطابق." };
 
   const user = await prisma.adminUser.findUnique({ where: { id: admin.id } });

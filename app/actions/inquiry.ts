@@ -6,6 +6,7 @@ import path from "node:path";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { RFQ_FILE, RFQ_PROJECT_TYPES } from "@/lib/rfq";
+import { clientIp, createLimiter } from "@/lib/rate-limit";
 
 export type InquiryState = {
   status: "idle" | "success" | "error";
@@ -14,17 +15,7 @@ export type InquiryState = {
 };
 
 // حماية بسيطة من الإغراق: 5 طلبات لكل IP كل 10 دقائق (في الذاكرة)
-const hits = new Map<string, number[]>();
-const WINDOW_MS = 10 * 60 * 1000;
-const MAX_HITS = 5;
-
-function rateLimited(key: string) {
-  const now = Date.now();
-  const recent = (hits.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  recent.push(now);
-  hits.set(key, recent);
-  return recent.length > MAX_HITS;
-}
+const limiter = createLimiter(10 * 60 * 1000, 5);
 
 const clean = (v: FormDataEntryValue | null, max: number) =>
   typeof v === "string" ? v.trim().slice(0, max) : "";
@@ -116,8 +107,7 @@ export async function submitInquiry(
   }
 
   const h = await headers();
-  const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
-  if (rateLimited(ip)) {
+  if (limiter.hit(clientIp(h))) {
     return {
       status: "error",
       message: "تم إرسال عدد كبير من الطلبات، حاول مرة أخرى لاحقًا.",
