@@ -13,7 +13,11 @@ import { HeroMedia } from "./HeroMedia";
 import { ParallaxLayer } from "./ParallaxLayer";
 import { Particles } from "./Particles";
 
-export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) {
+export function Hero({
+  settings,
+  stats,
+  hasProjects = true,
+}: Pick<SiteData, "settings" | "stats"> & { hasProjects?: boolean }) {
   preload("/hero/poster.jpg", { as: "image", fetchPriority: "high" });
   return (
     <section
@@ -69,22 +73,24 @@ export function Hero({ settings, stats }: Pick<SiteData, "settings" | "stats">) 
             <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-x-8 gap-y-4">
               <Magnetic>
                 <a
-                  href={`#${SECTION_IDS.projects}`}
+                  href={`#${hasProjects ? SECTION_IDS.projects : SECTION_IDS.contact}`}
                   className="group inline-flex items-center gap-3 rounded-full px-8 py-4 bg-gold-soft text-ink text-sm font-bold hover:bg-white transition-colors duration-300"
                 >
-                  <span>{settings.heroPrimaryCta}</span>
+                  <span>{hasProjects ? settings.heroPrimaryCta : settings.heroSecondaryCta}</span>
                   <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
                 </a>
               </Magnetic>
-              <a
-                href={`#${SECTION_IDS.contact}`}
-                className="group inline-flex items-center gap-2.5 text-sm font-semibold text-white/90 hover:text-gold-soft transition-colors"
-              >
-                <span className="border-b border-white/30 group-hover:border-gold-soft pb-1 transition-colors">
-                  {settings.heroSecondaryCta}
-                </span>
-                <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
-              </a>
+              {hasProjects && (
+                <a
+                  href={`#${SECTION_IDS.contact}`}
+                  className="group inline-flex items-center gap-2.5 text-sm font-semibold text-white/90 hover:text-gold-soft transition-colors"
+                >
+                  <span className="border-b border-white/30 group-hover:border-gold-soft pb-1 transition-colors">
+                    {settings.heroSecondaryCta}
+                  </span>
+                  <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
+                </a>
+              )}
             </motion.div>
           </div>
 

@@ -4,10 +4,10 @@ import type { SiteData } from "@/lib/data";
 import { FitText } from "./FitText";
 import { Reveal, RevealHeading } from "./Reveal";
 
-const quickLinks = (base: string) => [
+const quickLinks = (base: string, hasProjects: boolean) => [
   { label: "الرئيسية", href: `${base}#${SECTION_IDS.hero}` },
   { label: "عن المؤسسة", href: `${base}#${SECTION_IDS.about}` },
-  { label: "محفظة المشاريع", href: `${base}#${SECTION_IDS.projects}` },
+  ...(hasProjects ? [{ label: "محفظة المشاريع", href: `${base}#${SECTION_IDS.projects}` }] : []),
   { label: "معايير الجودة والسلامة", href: `${base}#${SECTION_IDS.quality}` },
   { label: "طلب استشارة وتسعير", href: `${base}#${SECTION_IDS.contact}` },
 ];
@@ -18,7 +18,8 @@ export function Footer({
   settings,
   services,
   homeBase = "",
-}: Pick<SiteData, "settings" | "services"> & { homeBase?: string }) {
+  hasProjects = true,
+}: Pick<SiteData, "settings" | "services"> & { homeBase?: string; hasProjects?: boolean }) {
   return (
     <footer className="snap-section w-full overflow-hidden bg-ink text-white">
       <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin">
@@ -83,7 +84,7 @@ export function Footer({
           <div className="lg:col-span-2">
             <h4 className="font-display text-base font-medium mb-5">روابط رئيسية</h4>
             <ul className="space-y-3">
-              {quickLinks(homeBase).map((l) => (
+              {quickLinks(homeBase, hasProjects).map((l) => (
                 <li key={l.href}>
                   <a className={linkClass} href={l.href}>
                     {l.label}

@@ -16,6 +16,8 @@ type Props = {
   crBadge: string;
   /** false في الصفحات الفرعية: الروابط تعود للرئيسية ولا يُميَّز قسم */
   home?: boolean;
+  /** false: لا مشاريع بعد، فيُخفى رابطها من القائمة */
+  hasProjects?: boolean;
 };
 
 export function HeaderBar({
@@ -26,7 +28,9 @@ export function HeaderBar({
   phone,
   crBadge,
   home = true,
+  hasProjects = true,
 }: Props) {
+  const navItems = hasProjects ? NAV_ITEMS : NAV_ITEMS.filter((i) => i.id !== SECTION_IDS.projects);
   const sectionActive = useActiveSection();
   const active = home ? sectionActive : "";
   const base = home ? "" : "/";
@@ -126,7 +130,7 @@ export function HeaderBar({
         </a>
 
         <nav className="hidden lg:flex items-center gap-9" aria-label="التنقل الرئيسي">
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const isActive = active === item.id;
             return (
               <a
@@ -189,7 +193,7 @@ export function HeaderBar({
           className="lg:hidden overflow-hidden border-t border-ink/10 bg-ivory px-margin-mobile flex flex-col"
           aria-label="قائمة الجوال"
         >
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <a
               key={item.id}
               href={`${base}#${item.id}`}

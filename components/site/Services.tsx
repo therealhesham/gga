@@ -13,7 +13,8 @@ export function Services({
   settings,
   services,
   categories,
-}: Pick<SiteData, "settings" | "services" | "categories">) {
+  hasProjects = true,
+}: Pick<SiteData, "settings" | "services" | "categories"> & { hasProjects?: boolean }) {
   return (
     <section
       id={SECTION_IDS.services}
@@ -45,7 +46,7 @@ export function Services({
               <ServiceCard
                 key={s.id}
                 categoryId={categoryForService(s.title, categories)}
-                href={`#${SECTION_IDS.projects}`}
+                href={`#${hasProjects ? SECTION_IDS.projects : SECTION_IDS.contact}`}
                 className={`group relative flex flex-col justify-between gap-10 p-7 md:p-9 min-h-[15rem] md:min-h-[20rem] transition-colors duration-500 hover:bg-white/[0.04] md:border-b md:border-white/10 ${
                   i % 2 === 0 ? "md:border-e" : ""
                 } lg:border-e lg:last:border-e-0`}
@@ -68,7 +69,7 @@ export function Services({
                   <h3 className="font-display text-xl font-medium mb-3">{s.title}</h3>
                   <p className="text-sm font-light leading-7 text-white/55 mb-6">{s.description}</p>
                   <span className="inline-flex items-center gap-2 text-sm font-medium text-white/60 transition-colors duration-500 group-hover:text-gold-soft">
-                    استعراض مشاريع الخدمة
+                    {hasProjects ? "استعراض مشاريع الخدمة" : "اطلب تسعيرًا لهذه الخدمة"}
                     <ArrowLeft className="size-4 transition-transform duration-500 group-hover:-translate-x-1.5" />
                   </span>
                 </div>

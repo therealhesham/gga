@@ -1,11 +1,12 @@
 "use client";
 
 import { motion, useScroll, useSpring } from "motion/react";
-import { NAV_ITEMS } from "@/lib/constants";
+import { NAV_ITEMS, SECTION_IDS } from "@/lib/constants";
 import { useActiveSection } from "./useActiveSection";
 
 /** نقاط تنقل جانبية بين الأقسام (الشاشات الكبيرة فقط). المؤشر النشط ينزلق بين النقاط، وتتكيف الألوان تلقائيًا مع الخلفية */
-export function SectionDots() {
+export function SectionDots({ hasProjects = true }: { hasProjects?: boolean }) {
+  const items = hasProjects ? NAV_ITEMS : NAV_ITEMS.filter((i) => i.id !== SECTION_IDS.projects);
   const active = useActiveSection();
   const { scrollYProgress } = useScroll();
   const fill = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.4 });
@@ -23,7 +24,7 @@ export function SectionDots() {
       <span aria-hidden="true" className="absolute inset-y-2 left-1/2 w-px -translate-x-1/2 bg-current opacity-15">
         <motion.span style={{ scaleY: fill, transformOrigin: "top" }} className="block h-full w-full bg-current opacity-100" />
       </span>
-      {NAV_ITEMS.map((item) => {
+      {items.map((item) => {
         const on = active === item.id;
         return (
           <a

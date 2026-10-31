@@ -37,7 +37,10 @@ export default async function Home() {
 
   // أقسام اختيارية: لا تُعرض الرافعة قبل قسم غير ظاهر، ويُحدَّد لون القسم السابق للرسم
   const hasCeo = !!(settings.ceoName.trim() && settings.ceoMessage.trim());
+  const hasProjects = data.projects.length > 0;
   const hasMap = data.projects.some((p) => matchCity(p.location));
+  // الخلفية التي تسبق قسم الجودة: الخريطة (داكنة) أو المشاريع (فاتحة) أو الخدمات (داكنة) إن غابتا
+  const beforeQualityDark = hasMap || !hasProjects;
   const hasTrust = data.partners.length > 0 || data.testimonials.length > 0;
 
   return (
@@ -45,11 +48,11 @@ export default async function Home() {
       <JsonLd data={organizationLd(settings)} />
       <Intro />
       <Chrome />
-      <Header settings={settings} />
-      <SectionDots />
+      <Header settings={settings} hasProjects={hasProjects} />
+      <SectionDots hasProjects={hasProjects} />
       <main data-snap-page className="w-full bg-ivory">
         <div className="flex flex-col w-full text-ink">
-          <Hero settings={settings} stats={data.stats} />
+          <Hero settings={settings} stats={data.stats} hasProjects={hasProjects} />
           <CraneDivider index="01" label="عن المؤسسة" onDark bg="bg-ink" room="lg:h-36" desktopOnly />
           <About settings={settings} pillars={data.pillars} />
           <ImageBand
@@ -59,23 +62,27 @@ export default async function Home() {
           />
           <CeoMessage settings={settings} />
           <CraneDivider index="02" label="خدماتنا" onDark={!hasCeo} bg={hasCeo ? "bg-ivory" : "bg-ink"} />
-          <Services settings={settings} services={data.services} categories={data.categories} />
-          <CraneDivider index="03" label="المشاريع" onDark bg="bg-ink" />
-          <Projects
-            eyebrow={settings.projectsEyebrow}
-            title={settings.projectsTitle}
-            cta={settings.projectsCta}
-            categories={data.categories}
-            projects={data.projects}
-          />
+          <Services settings={settings} services={data.services} categories={data.categories} hasProjects={hasProjects} />
+          {hasProjects && (
+            <>
+              <CraneDivider index="03" label="المشاريع" onDark bg="bg-ink" />
+              <Projects
+                eyebrow={settings.projectsEyebrow}
+                title={settings.projectsTitle}
+                cta={settings.projectsCta}
+                categories={data.categories}
+                projects={data.projects}
+              />
+            </>
+          )}
           {hasMap && <CraneDivider index="04" label="حضورنا الوطني" bg="bg-ivory" room="lg:h-24" />}
           <ProjectsMap projects={data.projects} />
           <CraneDivider
             index="05"
             label="الجودة والمعايير"
-            onDark={hasMap}
-            bg={hasMap ? "bg-ink" : "bg-ivory"}
-            room={hasMap ? undefined : "lg:h-24"}
+            onDark={beforeQualityDark}
+            bg={beforeQualityDark ? "bg-ink" : "bg-ivory"}
+            room={beforeQualityDark ? undefined : "lg:h-24"}
           />
           <Quality
             settings={settings}
@@ -93,7 +100,7 @@ export default async function Home() {
           <Consultation settings={settings} />
         </div>
       </main>
-      <Footer settings={settings} services={data.services} />
+      <Footer settings={settings} services={data.services} hasProjects={hasProjects} />
     </MotionRoot>
   );
 }
