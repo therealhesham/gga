@@ -9,7 +9,6 @@ import { CountUp } from "./CountUp";
 import { HeroReveal } from "./HeroReveal";
 import { Magnetic } from "./Magnetic";
 import type { SiteData } from "@/lib/data";
-import { HeroMedia } from "./HeroMedia";
 import { ParallaxLayer } from "./ParallaxLayer";
 import { Particles } from "./Particles";
 
@@ -18,16 +17,24 @@ export function Hero({
   stats,
   hasProjects = true,
 }: Pick<SiteData, "settings" | "stats"> & { hasProjects?: boolean }) {
-  preload("/hero/poster.jpg", { as: "image", fetchPriority: "high" });
+  preload("/hero/construction.svg", { as: "image", fetchPriority: "high" });
   return (
     <section
       id={SECTION_IDS.hero}
       className="snap-section relative isolate w-full min-h-svh overflow-hidden bg-ink text-white flex flex-col"
     >
-      {/* الخلفية: فيديو إنشاءات (parallax) + طبقات تدرّج لثبات قراءة النص */}
+      {/* الخلفية: رسم SVG لموقع إنشاء أبراج (parallax) + طبقات تدرّج لثبات قراءة النص */}
       <div className="absolute inset-0 -z-10">
         <ParallaxLayer distance={200} className="absolute inset-0">
-          <HeroMedia src="/hero/construction.mp4" poster="/hero/poster.jpg" />
+          {/* eslint-disable-next-line @next/next/no-img-element -- SVG: لا يحتاج تحسين next/image */}
+          <img
+            src="/hero/construction.svg"
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            decoding="async"
+            className="hero-zoom absolute inset-0 size-full object-cover object-[38%_center]"
+          />
         </ParallaxLayer>
         <div className="absolute inset-0 bg-gradient-to-l from-ink/80 via-ink/40 to-ink/5" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-transparent via-40% to-ink/45" />

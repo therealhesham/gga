@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { BadgeCheck, MapPin, Menu, Phone, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { NAV_ITEMS, SECTION_IDS } from "@/lib/constants";
 import { EASE } from "@/lib/motion";
 import { useActiveSection } from "./useActiveSection";
@@ -11,9 +11,6 @@ type Props = {
   companyName: string;
   companyTagline: string;
   ctaLabel: string;
-  topAddress: string;
-  phone: string;
-  crBadge: string;
   /** false في الصفحات الفرعية: الروابط تعود للرئيسية ولا يُميَّز قسم */
   home?: boolean;
   /** false: لا مشاريع بعد، فيُخفى رابطها من القائمة */
@@ -24,9 +21,6 @@ export function HeaderBar({
   companyName,
   companyTagline,
   ctaLabel,
-  topAddress,
-  phone,
-  crBadge,
   home = true,
   hasProjects = true,
 }: Props) {
@@ -58,37 +52,6 @@ export function HeaderBar({
           : "bg-gradient-to-b from-ink/75 via-ink/30 to-transparent text-white"
       }`}
     >
-      {/* شريط المعلومات: يختفي بنعومة عند التمرير */}
-      <div
-        className={`overflow-hidden transition-all duration-500 ${
-          scrolled ? "max-h-0 opacity-0" : "max-h-10 opacity-100"
-        } hidden sm:block`}
-      >
-        <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin h-10 flex items-center justify-between text-xs font-light text-white/70">
-          <div className="flex items-center gap-6">
-            {topAddress && (
-              <span className="flex items-center gap-1.5">
-                <MapPin className="size-3.5 text-gold-soft" />
-                {topAddress}
-              </span>
-            )}
-            {phone && (
-              <span className="flex items-center gap-1.5" dir="ltr">
-                <Phone className="size-3.5 text-gold-soft" />
-                {phone}
-              </span>
-            )}
-          </div>
-          {crBadge && (
-            <span className="flex items-center gap-1.5">
-              <BadgeCheck className="size-3.5 text-gold-soft" />
-              {crBadge}
-            </span>
-          )}
-        </div>
-        <div className="h-px bg-white/10 max-w-7xl mx-auto" />
-      </div>
-
       <div
         className={`max-w-7xl mx-auto px-margin-mobile md:px-margin flex items-center justify-between gap-6 transition-all duration-500 ${
           scrolled ? "h-16" : "h-20"
